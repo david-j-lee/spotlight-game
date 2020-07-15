@@ -3,30 +3,35 @@
   "version": "0.1.0",
   "private": true,
   "description": "A guessing game for travel lovers.",
-  "author": "github.com/JonathanMEnriquez",
-  "dependencies": {
-    "@testing-library/jest-dom": "4.2.4",
-    "@testing-library/react": "9.3.2",
-    "@testing-library/user-event": "7.1.2",
-    "cross-env": "7.0.0",
-    "electron-is-dev": "1.1.0",
-    "react": "16.12.0",
-    "react-dom": "16.12.0",
-    "react-scripts": "3.3.0"
-  },
-  "main": "public/electron.js",
-  "build": {
-    "appId": "spotlight.menu"
-  },
-  "homepage": "./",
+  "author": "github.com/david-j-lee",
   "scripts": {
-    "react-start": "react-scripts start",
-    "react-build": "react-scripts build",
-    "react-test": "react-scripts test",
-    "react-eject": "react-scripts eject",
-    "electron-build": "electron-builder",
-    "build": "npm run react-build && electron-builder",
-    "start": "concurrently \"cross-env BROWSER=none npm run react-start\" \"wait-on http://localhost:3000 && electron .\""
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "coverage": "react-scripts test --env=jsdom --coverage"
+  },
+  "devDependencies": {
+    "@testing-library/jest-dom": "5.11.0",
+    "@testing-library/react": "10.4.6",
+    "@testing-library/user-event": "12.0.11",
+    "@types/jest": "^26.0.4",
+    "@types/node": "^14.0.23",
+    "@types/react": "^16.9.43",
+    "@types/react-dom": "^16.9.8",
+    "@types/react-router-dom": "^5.1.5",
+    "firebase": "7.16.0",
+    "node-sass": "4.14.1",
+    "typescript": "3.9.6"
+  },
+  "dependencies": {
+    "@material-ui/core": "4.11.0",
+    "@material-ui/icons": "4.9.1",
+    "@material-ui/lab": "^4.0.0-alpha.56",
+    "@techempower/react-governor": "^0.7.0",
+    "react": "16.13.1",
+    "react-dom": "16.13.1",
+    "react-router-dom": "5.2.0",
+    "react-scripts": "3.4.1"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -42,12 +47,5 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "devDependencies": {
-    "concurrently": "5.1.0",
-    "electron": "7.1.10",
-    "electron-builder": "22.3.2",
-    "wait-on": "4.0.0",
-    "firebase": "7.7.0"
   }
 }

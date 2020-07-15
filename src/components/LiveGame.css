@@ -1,0 +1,26 @@
+.live-game {
+    width: 100%;
+    height: 100%;
+}
+
+.live-game .footer-actions {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    padding: 8px;
+    display: flex;
+    justify-content: flex-start;
+}
+
+.footer-actions .gears {
+    width: 28px;
+    height: 28px;
+    cursor: pointer;
+    padding: 2px;
+    margin-right: 8px;
+    margin-bottom: 4px;
+    border: 2px solid gray;
+    border-radius: 8px;
+    display: inline;
+    background: white;
+}

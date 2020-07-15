@@ -1,0 +1,90 @@
+.postgame {
+    width: 100%;
+    height: 100%;
+    background-color: white;
+    opacity: 0.75;
+    overflow: hidden;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.postgame h2 {
+    padding: 32px 0 0 10%;
+    margin-bottom: 16px;
+}
+
+.postgame .caption {
+    width: 80%;
+    margin: 0 auto;
+    font-size: 2.5vw;
+    font-weight: normal;
+    padding: 15vh 0;
+    text-align: center;
+    background: black;
+    border: none;
+    border-radius: 10px;
+    color: white;
+}
+
+.postgame .main-button-container {
+    width: 100%;
+    z-index: 50;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-top: 4.5vh;
+}
+
+.postgame .hidden {
+    display: none;
+}
+
+.postgame .google {
+    margin: 0 auto;
+    padding: 2vh 0 0;
+    display: flex;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.postgame .google-warning {
+    display: block;
+    font-size: .8vw;
+    padding-top: 2px;
+    padding-bottom: 2vh;
+    z-index: 1000;
+    color: black;
+    text-align: center;
+}
+
+.postgame .guesses-caption {
+    color: #171717;
+    font-size: 12px;
+    padding-top: 0.25vh;
+}
+
+.postgame .guesses-caption .guess-caption {
+    width: 10vw;
+    padding-right: 1vw;
+    display: inline-block;
+}
+
+.postgame .small-caption {
+    color: black;
+}
+
+.postgame .skip {
+    cursor: pointer;
+    color: rgba(216, 12, 12, 0.781);
+    text-align: right;
+    width: 85%;
+    position: relative;
+    top: -2vh;
+    font-size: 1vw;
+    font-weight: bold;
+}
+
+.postgame .skip:hover {
+    text-shadow: 1px 1px 2px rgba(196, 196, 196, 0.767);
+}

@@ -1,0 +1,45 @@
+.history {
+    height: 60vh;
+    background: darkgray;
+    border: 2px solid white;
+    border-radius: 8px;
+    overflow-y: hidden;
+    color: black;
+}
+
+.history .results {
+    width: 100%;
+    overflow-y: auto;
+    height: 45vh;
+    text-align: center;
+}
+
+.history table {
+    width: 100%;
+    padding: 0 1vw;
+}
+
+.history .close {
+    cursor: pointer;
+    position: absolute;
+    right: 28px;
+    width: 3vw;
+    padding: 1vh 0.5vw 0.5vh;
+}
+
+.history > h3 {
+    text-align: center;
+    font-weight: normal;
+    font-size: 2vw;
+    color: rgb(216, 216, 216);
+}
+
+.history .record:hover {
+    background: gold;
+}
+
+.history tr th {
+    font-weight: normal;
+    font-size: 2vw;
+    color: rgb(43, 43, 43);
+}
