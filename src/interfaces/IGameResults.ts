@@ -1,15 +1,7 @@
 import { Moment } from 'moment';
+import IGuesses from './IGuesses';
+import IGameResultsDb from './IGameResultsDb';
 
-export default interface IGameResults {
-  date: string;
+export default interface IGameResults extends IGameResultsDb {
   momentDate: Moment;
-  guesses: IGuesses;
-  imageSource: string;
-  location: string;
-  skipped: boolean;
-  winner: string;
-}
-
-interface IGuesses {
-  [key: string]: string;
 }

@@ -5,6 +5,9 @@ import { makeStyles, Theme } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 
+import PublicIcon from '@material-ui/icons/Public';
+import ListIcon from '@material-ui/icons/List';
+
 import TopThree from './TopThree';
 
 import Spotlight from '../../img/spotlight.png';
@@ -38,6 +41,7 @@ const Home: FC<IProps> = () => {
           color="primary"
           size="large"
           variant="contained"
+          startIcon={<PublicIcon />}
         >
           Play
         </Button>
@@ -46,6 +50,7 @@ const Home: FC<IProps> = () => {
           to="/leaderboards"
           color="secondary"
           variant="outlined"
+          startIcon={<ListIcon />}
         >
           Leaderboards
         </Button>

@@ -5,7 +5,8 @@ import { data } from '../data/contents.json';
 import { INITIAL_STATE } from './../context';
 import IState from './../interfaces/IState';
 import IGameResults from './../interfaces/IGameResults';
-import Game from '../utils/GameClass';
+import IGuesses from '../interfaces/IGuesses';
+import IGameResultsDb from './../interfaces/IGameResultsDb';
 
 export const gameActions = {
   async loadAssets(user: string) {
@@ -36,8 +37,8 @@ export const gameActions = {
             }))
             .sort(
               (a: any, b: any) =>
-                b.momentDate.format('YYYYMMDD') -
-                a.momentDate.format('YYYYMMDD'),
+                b.momentDate.format('YYYYMMDDHHmmss') -
+                a.momentDate.format('YYYYMMDDHHmmss'),
             );
         }
       })
@@ -54,17 +55,6 @@ export const gameActions = {
         stats: {
           ...state.stats,
           history,
-        },
-      };
-    };
-  },
-  setGameMode(mode: 'pre' | 'live' | 'post') {
-    return (state: IState): IState => {
-      return {
-        ...state,
-        game: {
-          ...state.game,
-          mode,
         },
       };
     };
@@ -94,13 +84,14 @@ export const gameActions = {
   skipImage() {
     return (state: IState): IState => {
       const gamesRef = firebase.database().ref(state.auth.userId + '/games');
-      const skippedGame = new Game(
-        state.game.image?.caption,
-        state.game.image?.source,
-        'SKIPPED',
-        false,
-        true,
-      );
+      const skippedGame: IGameResultsDb = {
+        location: state.game.image?.caption || '',
+        imageSource: state.game.image?.source || '',
+        date: new Date().toISOString(),
+        winner: 'SKIPPED',
+        guesses: {},
+        skipped: true,
+      };
       gamesRef.push(skippedGame);
       return {
         ...state,
@@ -125,13 +116,14 @@ export const gameActions = {
   skipImageAndReload() {
     return (state: IState): IState => {
       const gamesRef = firebase.database().ref(state.auth.userId + '/games');
-      const skippedGame = new Game(
-        state.game.image?.caption,
-        state.game.image?.source,
-        'SKIPPED',
-        false,
-        true,
-      );
+      const skippedGame: IGameResultsDb = {
+        location: state.game.image?.caption || '',
+        imageSource: state.game.image?.source || '',
+        date: new Date().toISOString(),
+        winner: 'SKIPPED',
+        guesses: {},
+        skipped: true,
+      };
       gamesRef.push(skippedGame);
       return INITIAL_STATE;
     };
@@ -157,7 +149,7 @@ export const gameActions = {
       };
     };
   },
-  updateGuesses(guesses: any[]) {
+  updateGuesses(guesses: IGuesses) {
     return (state: IState): IState => {
       return {
         ...state,

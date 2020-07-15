@@ -1,4 +1,4 @@
-A game for people that stare at Windows Spotlight images too much. Created in Electron and React.
+A game for people that stare at Windows Spotlight images too much. Created with React.
 
 ## Get Started
 
@@ -11,16 +11,15 @@ In the project directory, you can now run:
 
 ### `npm run start`
 
-This will open a local electron desktop app to play the game. Only a single user is currently allowed to write to the firebase db.
+This will open a local web app to play the game. Only a single user is currently allowed to write to the firebase db.
 
 ### `npm run build`
 
 Builds the app for production to the `dist` folder.<br />
-Currently only tested in MacOS.
-
 
 ## TODO
 
-- Validate inputs
-- Fix input updates
-- Show location on skip
+- Better support of types
+- More metrics
+- Testing
+- Refactor firebase updates to single source

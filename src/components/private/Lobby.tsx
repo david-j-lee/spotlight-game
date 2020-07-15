@@ -5,6 +5,7 @@ import { makeStyles, Theme } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
 
 import HomeIcon from '@material-ui/icons/Home';
+import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 
 import { useContext } from '../../context';
 import Player from './Player';
@@ -87,6 +88,7 @@ const Lobby: FC = () => {
           component={Link}
           disabled={!image?.source}
           to={`/game/${encodeURIComponent(image ? image.source : '')}`}
+          startIcon={<PlayArrowIcon />}
         >
           Start Game
         </Button>

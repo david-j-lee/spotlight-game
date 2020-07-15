@@ -82,7 +82,7 @@ const GameResultsListing: FC<IProps> = () => {
                   )}
                   <CardContent className={classes.cardContent}>
                     <Typography variant="caption">
-                      {record.momentDate.format('ddd, MMMM D, YYYY hh:mm')}
+                      {record.momentDate.format('ddd, MMMM D, YYYY h:mm A')}
                     </Typography>
                     <Typography variant="body1">{record.location}</Typography>
                     <div className={classes.link}>

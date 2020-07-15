@@ -6,10 +6,12 @@ import firebase from '../../firebase';
 import { makeStyles, Theme } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Drawer from '@material-ui/core/Drawer';
 import TextField from '@material-ui/core/TextField';
 
+import Alert from '@material-ui/lab/Alert';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import SpeedDial from '@material-ui/lab/SpeedDial';
 import SpeedDialIcon from '@material-ui/lab/SpeedDialIcon';
@@ -20,9 +22,12 @@ import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import HomeIcon from '@material-ui/icons/Home';
 import SkipNextIcon from '@material-ui/icons/SkipNext';
 import WeekendIcon from '@material-ui/icons/Weekend';
+import CheckIcon from '@material-ui/icons/Check';
+import ClearIcon from '@material-ui/icons/Clear';
 
 import { useContext } from '../../context';
-import GameClass from '../../utils/GameClass';
+import IGameResultsDb from '../../interfaces/IGameResultsDb';
+import Map from '../../img/map.png';
 
 const Game: FC = () => {
   const params: any = useParams();
@@ -39,7 +44,12 @@ const Game: FC = () => {
 
   const [speedDialOpen, setSpeedDialOpen] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const [dialogOpen, setDialogOpen] = React.useState(false);
+  const [declareWinnerDialogOpen, setDeclareWinnerDialogOpen] = React.useState(
+    false,
+  );
+  const [skipDialogOpen, setSkipDialogOpen] = useState(false);
+  const [skipImageOnDialogClose, setSkipImageOnDialogClose] = useState(false);
+  const [error, setError] = useState('');
   const [guesses, setGuesses] = useState({});
 
   useEffect(() => {
@@ -51,80 +61,69 @@ const Game: FC = () => {
     }
   }, [url, image, history, setImageWithUrl]);
 
-  const handleSpeedDialOpen = () => {
-    setSpeedDialOpen(true);
+  const handleSkipClick = (event: any) => {
+    event.preventDefault();
+    event.stopPropagation();
+    setSkipDialogOpen(true);
   };
 
-  const handleSpeedDialClose = () => {
-    setSpeedDialOpen(false);
-  };
-
-  const handleSpeedDialClick = () => {
-    setDrawerOpen(!drawerOpen);
-  };
-
-  const handleSkip = () => {
-    // TODO: Modal and display location
-    skipImage();
-  };
-
-  const handleInputChange = (playerName: string, newValue: any) => {
-    // TODO: This does not update on free form input
-    setGuesses({ ...guesses, [playerName]: newValue });
+  const handleSkipDialogClose = () => {
+    console.log(skipImageOnDialogClose);
+    if (skipImageOnDialogClose) {
+      skipImage();
+      setSkipImageOnDialogClose(false);
+    }
+    setSkipDialogOpen(false);
   };
 
   const submitGuesses = () => {
-    // TODO: Validate inputs
-    setDialogOpen(true);
-  };
-
-  const handleDialogClose = (value: string) => {
-    setDialogOpen(false);
+    if (
+      Object.keys(guesses).filter((guess) => guess).length <
+      players.filter((player) => player.playing).length - 1 // -1 for No one
+    ) {
+      setError('Every player must include a guess');
+    } else {
+      setDeclareWinnerDialogOpen(true);
+    }
   };
 
   const setGoogleSrc = () => {
     return `https://www.google.com/maps/embed/v1/place?q=${image?.caption}&zoom=7&key=AIzaSyC1aEMKRB6A4_rZq8uwov5Q_uRkYy1TK0Q`;
   };
 
-  const getGoogleWidth = () => {
-    const width = 600;
-    return `${width}`;
-  };
-
-  const getGoogleHeight = () => {
-    const height = 250;
-    return `${height}`;
-  };
-
   const declareWinner = (winner: string) => {
-    const gamesRef = firebase.database().ref(userId + '/games');
-    const newGame = new GameClass(
-      image?.caption,
-      image?.source,
-      winner,
-      guesses,
-    );
-    gamesRef.push(newGame);
+    if (image) {
+      const gamesDb = firebase.database().ref(userId + '/games');
+      const newGame: IGameResultsDb = {
+        location: image.caption,
+        imageSource: image.source,
+        date: new Date().toISOString(),
+        winner,
+        guesses,
+        skipped: false,
+      };
+      gamesDb.push(newGame);
 
-    players
-      .filter((player) => player.playing)
-      .forEach((player) => {
-        const playerRef = firebase
-          .database()
-          .ref(userId + '/players/' + player._id);
-        if (player.name === winner) {
-          playerRef.update({
-            wins: player.wins += 1,
-            gamesPlayed: player.gamesPlayed += 1,
-          });
-        } else {
-          playerRef.update({ gamesPlayed: player.gamesPlayed += 1 });
-        }
-      });
+      players
+        .filter((player) => player.playing)
+        .forEach((player) => {
+          const playerDb = firebase
+            .database()
+            .ref(userId + '/players/' + player._id);
+          if (player.name === winner) {
+            playerDb.update({
+              wins: player.wins += 1,
+              gamesPlayed: player.gamesPlayed += 1,
+            });
+          } else {
+            playerDb.update({ gamesPlayed: player.gamesPlayed += 1 });
+          }
+        });
 
-    history.push(`/game-results/${url}`);
+      history.push(`/game-results/${url}`);
 
-    addGameToHistory({...newGame, momentDate: moment(newGame.date)});
+      addGameToHistory({ ...newGame, momentDate: moment(newGame.date) });
+    }
   };
 
   if (game.players.length === 0) {
@@ -137,6 +136,7 @@ const Game: FC = () => {
 
   return (
     <div className={classes.root}>
+      {/* Image for the game */}
       <div
         className={[classes.image, drawerOpen ? classes.imageShift : ''].join(
           ' ',
@@ -145,16 +145,18 @@ const Game: FC = () => {
           background: `url(${image.source}) center / contain no-repeat`,
         }}
       />
+      {/* Drawer used to fill in guesses */}
       <Drawer
         className={classes.drawer}
         variant="persistent"
         anchor="right"
         open={drawerOpen}
         classes={{
-          paper: classes.drawerPaper,
+          paper: [classes.drawerPaper, 'styled-scrollbar'].join(' '),
         }}
       >
         <div className={classes.drawerContent}>
+          <img src={Map} alt="Map" width="40" height="40" />
           <div className={classes.inputs}>
             {players
               .filter((player) => player.playing && player.name !== 'No one')
@@ -164,8 +166,8 @@ const Game: FC = () => {
                   freeSolo
                   options={hints}
                   value={guesses[player.name] || ''}
-                  onChange={(_, newValue) =>
-                    handleInputChange(player.name, newValue)
+                  onInputChange={(_, newValue) =>
+                    setGuesses({ ...guesses, [player.name]: newValue })
                   }
                   renderInput={(params) => (
                     <TextField
@@ -182,23 +184,44 @@ const Game: FC = () => {
             variant="contained"
             color="primary"
             size="large"
+            startIcon={<CheckIcon />}
           >
             Submit
           </Button>
+          {error && (
+            <Alert severity="error" className={classes.alert}>
+              {error}
+            </Alert>
+          )}
         </div>
       </Drawer>
-      <Dialog onClose={handleDialogClose} open={dialogOpen}>
+      {/* Dialog used to declare the winner */}
+      <Dialog
+        onClose={() => setDeclareWinnerDialogOpen(false)}
+        open={declareWinnerDialogOpen}
+        classes={{
+          paper: classes.dialogPaper,
+        }}
+      >
         <DialogTitle>{image.caption}</DialogTitle>
         <div className={classes.dialogContent}>
-          <iframe
-            title="google"
-            width={getGoogleWidth()}
-            height={getGoogleHeight()}
-            frameBorder="0"
-            src={setGoogleSrc()}
-            allowFullScreen
-          ></iframe>
-          <div className={classes.guesses}>
+          <div className="styled-scrollbar">
+            <div
+              className={[classes.image, classes.drawerImage].join(' ')}
+              style={{
+                background: `url(${image.source}) center / contain no-repeat`,
+              }}
+            />
+            <iframe
+              title="google"
+              width={'100%'}
+              height="250"
+              frameBorder="0"
+              src={setGoogleSrc()}
+              allowFullScreen
+            ></iframe>
+          </div>
+          <div className={[classes.guesses, 'styled-scrollbar'].join(' ')}>
             {players
               .filter((player) => player.playing)
               .sort(
@@ -220,9 +243,50 @@ const Game: FC = () => {
           </div>
         </div>
       </Dialog>
+      {/* Dialog to skip the image */}
+      <Dialog onClose={handleSkipDialogClose} open={skipDialogOpen}>
+        <DialogTitle>
+          {skipImageOnDialogClose
+            ? image.caption
+            : 'Are you sure you want to skip?'}
+        </DialogTitle>
+        <DialogActions>
+          {!skipImageOnDialogClose && (
+            <>
+              <Button
+                color="primary"
+                variant="contained"
+                onClick={() => setSkipImageOnDialogClose(true)}
+                startIcon={<CheckIcon />}
+              >
+                Yes
+              </Button>
+              <Button
+                variant="outlined"
+                onClick={() => setSkipDialogOpen(false)}
+                startIcon={<ClearIcon />}
+              >
+                No
+              </Button>
+            </>
+          )}
+          {skipImageOnDialogClose && (
+            <Button
+              color="primary"
+              variant="contained"
+              onClick={handleSkipDialogClose}
+              startIcon={<ClearIcon />}
+            >
+              Close
+            </Button>
+          )}
+        </DialogActions>
+      </Dialog>
+      {/* Speed dial of actions */}
       <SpeedDial
         ariaLabel="SpeedDial openIcon example"
         className={[
+          'dial',
           classes.speedDial,
           drawerOpen ? classes.speedDialShifted : '',
         ].join(' ')}
@@ -231,15 +295,20 @@ const Game: FC = () => {
             openIcon={drawerOpen ? <ChevronRightIcon /> : <ChevronLeftIcon />}
           />
         }
-        onClose={handleSpeedDialClose}
-        onOpen={handleSpeedDialOpen}
-        onClick={handleSpeedDialClick}
+        onClose={() => setSpeedDialOpen(false)}
+        onOpen={() => setSpeedDialOpen(true)}
+        onClick={() => setDrawerOpen(!drawerOpen)}
         open={speedDialOpen}
       >
         <SpeedDialAction
+          icon={drawerOpen ? <ChevronRightIcon /> : <ChevronLeftIcon />}
+          tooltipTitle={drawerOpen ? 'Hide Inputs' : 'Show Inputs'}
+          onClick={() => setDrawerOpen(!drawerOpen)}
+        />
+        <SpeedDialAction
           icon={<SkipNextIcon />}
           tooltipTitle="Skip"
-          onClick={handleSkip}
+          onClick={handleSkipClick}
         />
         <SpeedDialAction
           icon={<WeekendIcon />}
@@ -297,18 +366,37 @@ const useStyles = makeStyles((theme: Theme) => ({
   drawerContent: {
     padding: theme.spacing(3),
   },
+  drawerImage: {
+    paddingTop: '56.25%', // 16:9
+    width: '100%',
+  },
+  alert: {
+    marginTop: theme.spacing(2),
+  },
   inputs: {
     '& > div': {
       margin: theme.spacing(2, 0),
     },
   },
+  dialogPaper: {
+    width: '100%',
+    maxWidth: 800,
+  },
   dialogContent: {
-    maxWidth: 600,
+    width: '100%',
+    maxWidth: 800,
+    position: 'relative',
+    display: 'flex',
+    overflow: 'hidden',
+    '& > div': {
+      width: '50%',
+      position: 'relative',
+      overflow: 'auto',
+    },
   },
   guesses: {
     display: 'flex',
     flexDirection: 'column',
-    justifyContent: 'center',
     alignItems: 'center',
     padding: theme.spacing(),
   },

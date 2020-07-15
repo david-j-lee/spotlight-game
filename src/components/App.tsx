@@ -9,6 +9,9 @@ const theme = createMuiTheme({
   palette: {
     type: 'dark',
   },
+  typography: {
+    fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
+  },
 });
 
 export const App: FC = () => {

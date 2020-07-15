@@ -14,12 +14,6 @@ export const INITIAL_STATE: IState = {
     failedAutoLogin: false,
   },
   game: {
-    modes: {
-      PREGAME: 'pre',
-      LIVEGAME: 'live',
-      POSTGAME: 'post',
-    },
-    mode: 'pre',
     players: [],
     guesses: {},
     hints: [],
