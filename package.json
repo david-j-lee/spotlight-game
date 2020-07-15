@@ -28,6 +28,7 @@
     "@material-ui/icons": "4.9.1",
     "@material-ui/lab": "^4.0.0-alpha.56",
     "@techempower/react-governor": "^0.7.0",
+    "moment": "^2.27.0",
     "react": "16.13.1",
     "react-dom": "16.13.1",
     "react-router-dom": "5.2.0",

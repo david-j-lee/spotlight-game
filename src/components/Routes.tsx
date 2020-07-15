@@ -1,22 +1,24 @@
 import React from 'react';
 import { BrowserRouter, Route } from 'react-router-dom';
 
-import Loading from './Loading';
+import Login from './Login';
+
+import PrivateRoute from './private/PrivateRoute';
+import Home from './private/Home';
+import Lobby from './private/Lobby';
+import Game from './private/Game';
+import GameResults from './private/GameResults';
+import Leaderboards from './private/Leaderboards';
 
 const Routes = () => {
-  // /
-  // /login
-  // /game/<url>
-  // /game-results/<url>
-  // /leaderboards
-  // /history
   return (
     <BrowserRouter>
-      <Route exact path="/" component={Loading} />
-      <Route path="/game/:url" />
-      <Route path="/game-results/:url" />
-      <Route path="/leaderboards" />
-      <Route path="/history" />
+      <Route path="/login" component={Login} />
+      <PrivateRoute exact path="/" component={Home} />
+      <PrivateRoute path="/lobby/:url?" component={Lobby} />
+      <PrivateRoute path="/game/:url?" component={Game} />
+      <PrivateRoute path="/game-results/:url?" component={GameResults} />
+      <PrivateRoute path="/leaderboards" component={Leaderboards} />
     </BrowserRouter>
   );
 };

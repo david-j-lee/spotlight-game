@@ -3,25 +3,35 @@ import { useGovernor } from '@techempower/react-governor';
 
 import IState from './interfaces/IState';
 
+import { authActions } from './actions/authActions';
 import { gameActions } from './actions/gameActions';
 
 export const INITIAL_STATE: IState = {
   isLoaded: false,
-  gameModes: {
-    PREGAME: 'pre',
-    LIVEGAME: 'live',
-    POSTGAME: 'post',
+  auth: {
+    userId: '',
+    isAuthenticated: false,
+    failedAutoLogin: false,
   },
-  gameMode: 'pre',
-  img: null,
-  players: [],
-  history: [],
-  guesses: {},
-  hints: [],
-  user: '',
+  game: {
+    modes: {
+      PREGAME: 'pre',
+      LIVEGAME: 'live',
+      POSTGAME: 'post',
+    },
+    mode: 'pre',
+    players: [],
+    guesses: {},
+    hints: [],
+    image: undefined,
+  },
+  stats: {
+    history: [],
+  },
 };
 
 const contract = {
+  ...authActions,
   ...gameActions,
 };
 

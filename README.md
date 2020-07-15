@@ -17,3 +17,10 @@ This will open a local electron desktop app to play the game. Only a single user
 
 Builds the app for production to the `dist` folder.<br />
 Currently only tested in MacOS.
+
+
+## TODO
+
+- Validate inputs
+- Fix input updates
+- Show location on skip

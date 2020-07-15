@@ -1,9 +1,11 @@
+import moment from 'moment';
 import firebase from '../firebase';
 
 import { data } from '../data/contents.json';
 import { INITIAL_STATE } from './../context';
-import Game from '../utils/GameClass';
 import IState from './../interfaces/IState';
+import IGameResults from './../interfaces/IGameResults';
+import Game from '../utils/GameClass';
 
 export const gameActions = {
   async loadAssets(user: string) {
@@ -24,48 +26,77 @@ export const gameActions = {
 
         val = snaps[1].val();
         if (val) {
-          const values = Object.values(val).filter((v: any) => !v.skipped);
-          history = values.sort((a: any, b: any) => {
-            const valA = new Date(a.date).getTime();
-            const valB = new Date(b.date).getTime();
-            return valB - valA;
-          });
+          history = Object.values(val)
+            .map((value: any) => ({
+              ...value,
+              momentDate: moment(value.date, [
+                'M/D/YYYY',
+                'YYYY-MM-DDTHH:mm:ss.SSS[Z]',
+              ]),
+            }))
+            .sort(
+              (a: any, b: any) =>
+                b.momentDate.format('YYYYMMDD') -
+                a.momentDate.format('YYYYMMDD'),
+            );
         }
       })
       .catch((err) => console.error(err));
-    return (state: IState) => {
+    return (state: IState): IState => {
       return {
         ...state,
-        players,
-        history,
-        img: getImageInfo(state.history),
-        hints: getHints(state.history),
         isLoaded: true,
+        game: {
+          ...state.game,
+          players,
+          hints: getHints(state.stats.history),
+        },
+        stats: {
+          ...state.stats,
+          history,
+        },
       };
     };
   },
-  setGameMode(gameMode: string) {
-    return (state: IState) => {
+  setGameMode(mode: 'pre' | 'live' | 'post') {
+    return (state: IState): IState => {
       return {
         ...state,
-        gameMode,
+        game: {
+          ...state.game,
+          mode,
+        },
+      };
+    };
+  },
+  setImageWithUrl(url: string) {
+    return (state: IState): IState => {
+      return {
+        ...state,
+        game: {
+          ...state.game,
+          image: data.find((image) => image.source === url),
+        },
       };
     };
   },
   getNewImage() {
-    return (state: IState) => {
+    return (state: IState): IState => {
       return {
         ...state,
-        img: getImageInfo(state.history),
+        game: {
+          ...state.game,
+          image: getRandomImage(state.stats.history),
+        },
       };
     };
   },
   skipImage() {
-    return (state: IState) => {
-      const gamesRef = firebase.database().ref(state.user + '/games');
+    return (state: IState): IState => {
+      const gamesRef = firebase.database().ref(state.auth.userId + '/games');
       const skippedGame = new Game(
-        state.img.caption,
-        state.img.img_src,
+        state.game.image?.caption,
+        state.game.image?.source,
         'SKIPPED',
         false,
         true,
@@ -73,16 +104,30 @@ export const gameActions = {
       gamesRef.push(skippedGame);
       return {
         ...state,
-        img: getImageInfo(state.history),
+        game: {
+          ...state.game,
+          image: getRandomImage(state.stats.history),
+        },
+        stats: {
+          ...state.stats,
+          history: [
+            ...state.stats.history,
+            {
+              ...skippedGame,
+              momentDate: moment(skippedGame.date),
+              guesses: {},
+            } as IGameResults,
+          ],
+        },
       };
     };
   },
   skipImageAndReload() {
-    return (state: IState) => {
-      const gamesRef = firebase.database().ref(state.user + '/games');
+    return (state: IState): IState => {
+      const gamesRef = firebase.database().ref(state.auth.userId + '/games');
       const skippedGame = new Game(
-        state.img.caption,
-        state.img.img_src,
+        state.game.image?.caption,
+        state.game.image?.source,
         'SKIPPED',
         false,
         true,
@@ -92,45 +137,54 @@ export const gameActions = {
     };
   },
   resetGame() {
-    return () => {
+    return (): IState => {
       return INITIAL_STATE;
     };
   },
-  setUser(user: any) {
-    return (state: IState) => {
-      return {
-        ...state,
-        user,
-      };
-    };
-  },
   toggleUserPlayingState(name: string) {
-    return (state: IState) => {
+    return (state: IState): IState => {
       return {
         ...state,
-        players: state.players.map((e) => {
-          if (e.name === name) {
-            e.playing = !e.playing;
-          }
-          return e;
-        }),
+        game: {
+          ...state.game,
+          players: state.game.players.map((player) => {
+            if (player.name === name) {
+              player.playing = !player.playing;
+            }
+            return player;
+          }),
+        },
       };
     };
   },
   updateGuesses(guesses: any[]) {
-    return (state: IState) => {
+    return (state: IState): IState => {
       return {
         ...state,
-        guesses,
+        game: {
+          ...state.game,
+          guesses,
+        },
+      };
+    };
+  },
+  addGameToHistory(game: IGameResults) {
+    return (state: IState): IState => {
+      return {
+        ...state,
+        stats: {
+          ...state.stats,
+          history: [...state.stats.history, game],
+        },
       };
     };
   },
 };
 
-const getImageInfo = (history: any[]) => {
+const getRandomImage = (history: any[]) => {
   const entry = data[Math.floor(Math.random() * data.length)];
-  if (history.find((e) => e.imgSrc === entry.img_src)) {
-    return getImageInfo(history);
+  if (history.find((e) => e.imageSource === entry.source)) {
+    return getRandomImage(history);
   }
   return entry;
 };
@@ -158,17 +212,17 @@ const getHints = (history: any[]) => {
     'Carribean',
   ];
   const seen: any = {};
-  const guesses: any[] = [];
-  history.forEach((h) => {
-    if (h.guesses) {
-      for (let g in h.guesses) {
-        const guess = h.guesses[g];
+  const hints: any[] = [];
+  history.forEach((record) => {
+    if (record.guesses) {
+      for (let g in record.guesses) {
+        const guess = record.guesses[g];
         if (!(guess in seen) && !banned.includes(guess)) {
           seen[guess] = 1;
-          guesses.push(guess);
+          hints.push(guess);
         }
       }
     }
   });
-  return guesses;
+  return hints.sort((a: string, b: string) => a.localeCompare(b));
 };
