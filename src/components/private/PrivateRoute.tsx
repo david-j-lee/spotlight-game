@@ -36,10 +36,7 @@ export const PrivateRoute: FC<IProps> = (props) => {
     }
   }, [isLoaded, userId, failedAutoLogin, setAuth, loadAssets]);
 
-  const link = document.createElement('a');
-  link.href = props.path;
-  const returnUrl = `${link.protocol}//${link.host}${link.pathname}${link.search}${link.hash}`;
-  const redirectUrl = `/login/${encodeURI(returnUrl).replace(/\//g, '%2F')}`;
+  const redirectUrl = `/login`;
   if (ready) {
     const { component: Component, ...rest } = props;
     return (
