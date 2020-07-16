@@ -20,6 +20,7 @@ const WinningStats: FC = () => {
 
   useEffect(() => {
     const groupedCounts = history
+      .filter((record) => record.guesses)
       .map((record) => record.guesses[record.winner])
       .filter((record) => record)
       .reduce((acc: object, record: string) => {
@@ -66,7 +67,6 @@ const WinningStats: FC = () => {
       }),
     );
     setFavoriteGuesses(favoriteGuesses);
-    console.log(favoriteGuesses);
   }, [history]);
 
   return (
