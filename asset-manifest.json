@@ -1,28 +1,28 @@
 {
   "files": {
-    "main.css": "/static/css/main.a2b20321.chunk.css",
-    "main.js": "/static/js/main.238ea178.chunk.js",
-    "main.js.map": "/static/js/main.238ea178.chunk.js.map",
-    "runtime-main.js": "/static/js/runtime-main.c53f8f3b.js",
-    "runtime-main.js.map": "/static/js/runtime-main.c53f8f3b.js.map",
-    "static/js/2.4e9cf2a2.chunk.js": "/static/js/2.4e9cf2a2.chunk.js",
-    "static/js/2.4e9cf2a2.chunk.js.map": "/static/js/2.4e9cf2a2.chunk.js.map",
-    "index.html": "/index.html",
-    "precache-manifest.bdf04c908b65e2246c4d5fffefd00876.js": "/precache-manifest.bdf04c908b65e2246c4d5fffefd00876.js",
-    "service-worker.js": "/service-worker.js",
-    "static/css/main.a2b20321.chunk.css.map": "/static/css/main.a2b20321.chunk.css.map",
-    "static/js/2.4e9cf2a2.chunk.js.LICENSE.txt": "/static/js/2.4e9cf2a2.chunk.js.LICENSE.txt",
-    "static/media/crown.png": "/static/media/crown.684af6ea.png",
-    "static/media/crown_off.png": "/static/media/crown_off.978e8029.png",
-    "static/media/map.png": "/static/media/map.ff05dc4d.png",
-    "static/media/spotlight.png": "/static/media/spotlight.6f01fba9.png",
-    "static/media/star.png": "/static/media/star.3c794117.png",
-    "static/media/star_off.png": "/static/media/star_off.2a641e87.png"
+    "main.css": "/spotlight-game/static/css/main.a2b20321.chunk.css",
+    "main.js": "/spotlight-game/static/js/main.e587ef2d.chunk.js",
+    "main.js.map": "/spotlight-game/static/js/main.e587ef2d.chunk.js.map",
+    "runtime-main.js": "/spotlight-game/static/js/runtime-main.fe489b99.js",
+    "runtime-main.js.map": "/spotlight-game/static/js/runtime-main.fe489b99.js.map",
+    "static/js/2.77a50745.chunk.js": "/spotlight-game/static/js/2.77a50745.chunk.js",
+    "static/js/2.77a50745.chunk.js.map": "/spotlight-game/static/js/2.77a50745.chunk.js.map",
+    "index.html": "/spotlight-game/index.html",
+    "precache-manifest.788986f67c65c5875091e908a4f0e8af.js": "/spotlight-game/precache-manifest.788986f67c65c5875091e908a4f0e8af.js",
+    "service-worker.js": "/spotlight-game/service-worker.js",
+    "static/css/main.a2b20321.chunk.css.map": "/spotlight-game/static/css/main.a2b20321.chunk.css.map",
+    "static/js/2.77a50745.chunk.js.LICENSE.txt": "/spotlight-game/static/js/2.77a50745.chunk.js.LICENSE.txt",
+    "static/media/crown.png": "/spotlight-game/static/media/crown.684af6ea.png",
+    "static/media/crown_off.png": "/spotlight-game/static/media/crown_off.978e8029.png",
+    "static/media/map.png": "/spotlight-game/static/media/map.ff05dc4d.png",
+    "static/media/spotlight.png": "/spotlight-game/static/media/spotlight.6f01fba9.png",
+    "static/media/star.png": "/spotlight-game/static/media/star.3c794117.png",
+    "static/media/star_off.png": "/spotlight-game/static/media/star_off.2a641e87.png"
   },
   "entrypoints": [
-    "static/js/runtime-main.c53f8f3b.js",
-    "static/js/2.4e9cf2a2.chunk.js",
+    "static/js/runtime-main.fe489b99.js",
+    "static/js/2.77a50745.chunk.js",
     "static/css/main.a2b20321.chunk.css",
-    "static/js/main.238ea178.chunk.js"
+    "static/js/main.e587ef2d.chunk.js"
   ]
 }
