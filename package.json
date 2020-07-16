@@ -4,7 +4,6 @@
   "private": true,
   "description": "A guessing game for travel lovers.",
   "author": "github.com/david-j-lee",
-  "homepage": "https://david-j-lee.github.io/spotlight-game",
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
