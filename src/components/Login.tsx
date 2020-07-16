@@ -26,6 +26,7 @@ const Login: FC = () => {
         const res: any = await auth.signInWithEmailAndPassword(email, password);
         if (res.user) {
           setAuth({
+            email: res.user.email,
             userId: res.user.uid,
             isAuthenticated: true,
             failedAutoLogin: false,

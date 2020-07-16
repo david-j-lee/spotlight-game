@@ -19,6 +19,7 @@ export const authActions = {
       return {
         ...state,
         auth: {
+          email: '',
           userId: '',
           isAuthenticated: false,
           failedAutoLogin: false,

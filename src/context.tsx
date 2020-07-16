@@ -9,6 +9,7 @@ import { gameActions } from './actions/gameActions';
 export const INITIAL_STATE: IState = {
   isLoaded: false,
   auth: {
+    email: '',
     userId: '',
     isAuthenticated: false,
     failedAutoLogin: false,

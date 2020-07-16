@@ -19,7 +19,11 @@ export const PrivateRoute: FC<IProps> = (props) => {
     if (!userId && !failedAutoLogin) {
       firebase.auth().onAuthStateChanged((user) => {
         if (user) {
-          setAuth({ userId: user.uid, isAuthenticated: true });
+          setAuth({
+            email: user.email,
+            userId: user.uid,
+            isAuthenticated: true,
+          });
           if (!isLoaded) {
             loadAssets(user.uid);
           }

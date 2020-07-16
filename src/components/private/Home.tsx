@@ -18,10 +18,14 @@ interface IProps {}
 const Home: FC<IProps> = () => {
   const classes = useStyles();
 
-  const [, { logoff }] = useContext();
+  const [{ auth }, { logoff }] = useContext();
+  const { email } = auth;
 
   return (
     <div className={[classes.root, 'styled-scrollbar'].join(' ')}>
+      <Typography color="textSecondary" className={classes.email}>
+        {email}
+      </Typography>
       <div className={classes.header}>
         <div>
           <img src={Spotlight} alt="logo" className={classes.image} />
@@ -79,6 +83,13 @@ const useStyles = makeStyles((theme: Theme) => ({
     display: 'flex',
     flexDirection: 'column',
     padding: theme.spacing(8),
+    position: 'relative',
+  },
+  email: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    padding: theme.spacing(),
   },
   header: {
     display: 'flex',
