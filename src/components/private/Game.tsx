@@ -68,7 +68,6 @@ const Game: FC = () => {
   };
 
   const handleSkipDialogClose = () => {
-    console.log(skipImageOnDialogClose);
     if (skipImageOnDialogClose) {
       skipImage();
       setSkipImageOnDialogClose(false);
