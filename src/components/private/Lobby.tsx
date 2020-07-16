@@ -95,7 +95,7 @@ const Lobby: FC = () => {
         <Button
           color="primary"
           variant="outlined"
-          size="small"
+          size="large"
           startIcon={<HomeIcon />}
           component={Link}
           to="/"
@@ -127,9 +127,13 @@ const useStyles = makeStyles((theme: Theme) => ({
   buttons: {
     display: 'flex',
     flexDirection: 'column',
+    justifyContent: 'center',
     alignItems: 'center',
+    marginTop: theme.spacing(4),
     '& > *': {
-      margin: theme.spacing(),
+      marginBottom: theme.spacing(2),
+      maxWidth: 200,
+      width: '100%',
     },
   },
 }));

@@ -23,7 +23,7 @@ const PlayerStats = () => {
 
   return (
     <div className={classes.root}>
-      <h1>Player Stats</h1>
+      <Typography variant="subtitle2">Player Stats</Typography>
       <div className={['styled-scrollbar', classes.players].join(' ')}>
         {players
           .filter((player) => player.active)
@@ -39,13 +39,13 @@ const PlayerStats = () => {
                   <Grid container spacing={0}>
                     <Grid item xs={6}>
                       <Typography>
-                        <small>{player.wins === 1 ? 'win' : 'wins'}</small>{' '}
+                        <small>{player.wins === 1 ? 'Win' : 'Wins'}</small>{' '}
                         {player.wins}
                       </Typography>
                     </Grid>
                     <Grid item xs={6}>
                       <Typography>
-                        <small>win rate</small>{' '}
+                        <small>Win rate</small>{' '}
                         {generateAverageWin(player.wins, player.gamesPlayed)}
                       </Typography>
                     </Grid>
@@ -92,7 +92,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
   },
   position: {
-    margin: theme.spacing(0, 2),
+    margin: theme.spacing(0, 2, 0, 1),
   },
   info: {
     flexGrow: 1,

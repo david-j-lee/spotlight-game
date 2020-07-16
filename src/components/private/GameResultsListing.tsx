@@ -50,7 +50,7 @@ const GameResultsListing: FC<IProps> = () => {
 
   return (
     <div className={classes.root}>
-      <Typography variant="h4" className={classes.title}>
+      <Typography variant="subtitle2" className={classes.title}>
         Game Results <Typography variant="caption">Last 50 games</Typography>
       </Typography>
       <div className={['styled-scrollbar', classes.results].join(' ')}>
@@ -160,9 +160,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     display: 'flex',
     flexDirection: 'column',
   },
-  title: {
-    marginBottom: theme.spacing(2),
-  },
+  title: {},
   results: {
     overflow: 'auto',
     flexGrow: 1,

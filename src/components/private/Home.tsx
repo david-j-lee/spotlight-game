@@ -7,15 +7,18 @@ import Typography from '@material-ui/core/Typography';
 
 import PublicIcon from '@material-ui/icons/Public';
 import ListIcon from '@material-ui/icons/List';
+import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 
+import { useContext } from '../../context';
 import TopThree from './TopThree';
-
 import Spotlight from '../../img/spotlight.png';
 
 interface IProps {}
 
 const Home: FC<IProps> = () => {
   const classes = useStyles();
+
+  const [, { logoff }] = useContext();
 
   return (
     <div className={[classes.root, 'styled-scrollbar'].join(' ')}>
@@ -49,10 +52,19 @@ const Home: FC<IProps> = () => {
           component={Link}
           to="/leaderboards"
           color="secondary"
-          variant="outlined"
+          size="large"
+          variant="contained"
           startIcon={<ListIcon />}
         >
           Leaderboards
+        </Button>
+        <Button
+          onClick={logoff}
+          color="secondary"
+          variant="outlined"
+          startIcon={<ExitToAppIcon />}
+        >
+          Quit
         </Button>
       </div>
     </div>

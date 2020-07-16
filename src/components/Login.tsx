@@ -49,7 +49,7 @@ const Login: FC = () => {
   }
 
   return (
-    <div className={classes.root}>
+    <div className={[classes.root, 'styled-scrollbar'].join(' ')}>
       <Typography variant="h1" className={classes.title}>
         <small>Into the</small>
         <br /> <strong>Spotlight</strong>
@@ -85,7 +85,10 @@ const Login: FC = () => {
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
-    margin: theme.spacing(4),
+    height: '100vh',
+    width: '100vw',
+    overflow: 'auto',
+    padding: theme.spacing(4),
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'center',

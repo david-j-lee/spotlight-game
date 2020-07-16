@@ -37,7 +37,7 @@ const Game: FC = () => {
 
   const [
     { auth, game },
-    { setImageWithUrl, skipImage, addGameToHistory },
+    { setImageWithUrl, skipImage, addGameToHistory, getNewImage },
   ] = useContext();
   const { userId } = auth;
   const { hints, image, players } = game;
@@ -119,10 +119,9 @@ const Game: FC = () => {
             playerDb.update({ gamesPlayed: player.gamesPlayed += 1 });
           }
         });
-
-      history.push(`/game-results/${url}`);
-
       addGameToHistory({ ...newGame, momentDate: moment(newGame.date) });
+      getNewImage();
+      history.push(`/game-results/${url}`);
     }
   };
 

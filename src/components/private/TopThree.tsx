@@ -106,8 +106,18 @@ const useStyle = makeStyles((theme: Theme) => ({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
+    width: '100%',
+    maxWidth: 400,
     '& > div': {
-      margin: theme.spacing(2, 0.5),
+      margin: theme.spacing(2, 1),
+      width: '33.3%',
+      whiteSpace: 'nowrap',
+      textAlign: 'center',
+      overflow: 'unset',
+      '& p': {
+        textOverflow: 'ellipsis',
+        overflow: 'hidden',
+      },
     },
   },
   cardWrapper: {
@@ -121,8 +131,8 @@ const useStyle = makeStyles((theme: Theme) => ({
   three: {},
   crown: {
     position: 'absolute',
-    width: 30,
-    height: 30,
+    width: 50,
+    height: 50,
     top: 0,
     left: 0,
     transform: 'translate(-50%, -50%) rotate(-35deg)',

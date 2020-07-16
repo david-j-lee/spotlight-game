@@ -3,12 +3,12 @@ import { Link } from 'react-router-dom';
 
 import { makeStyles, Theme } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
-
 import HomeIcon from '@material-ui/icons/Home';
 
 import TopThree from './TopThree';
 import PlayerStats from './PlayerStats';
 import GameResultsListing from './GameResultsListing';
+import WinningStats from './WinningStats';
 
 interface IProps {}
 
@@ -18,10 +18,11 @@ const Leaderboards: FC<IProps> = () => {
   return (
     <div className={classes.root}>
       <div className={classes.left}>
-        <div className={classes.leftRow}>
+        <div className={[classes.leftRow, classes.leftRowNoShrink].join(' ')}>
           <Button
             color="primary"
             variant="contained"
+            size="large"
             startIcon={<HomeIcon />}
             component={Link}
             to="/"
@@ -29,8 +30,11 @@ const Leaderboards: FC<IProps> = () => {
             Back to Home
           </Button>
         </div>
-        <div className={classes.leftRow}>
+        <div className={[classes.leftRow, classes.leftRowNoShrink].join(' ')}>
           <TopThree />
+        </div>
+        <div className={classes.leftRow}>
+          <WinningStats />
         </div>
         <div className={classes.leftRow}>
           <PlayerStats />
@@ -60,10 +64,13 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
   leftRow: {
     overflow: 'hidden',
-    marginBottom: theme.spacing(4),
+    marginBottom: theme.spacing(2),
     '&:last-child': {
       marginBottom: 0,
     },
+  },
+  leftRowNoShrink: {
+    flexShrink: 0,
   },
   right: {
     width: '60%',

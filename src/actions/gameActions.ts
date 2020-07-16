@@ -166,7 +166,7 @@ export const gameActions = {
         ...state,
         stats: {
           ...state.stats,
-          history: [...state.stats.history, game],
+          history: [game, ...state.stats.history],
         },
       };
     };
