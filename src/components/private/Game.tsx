@@ -161,9 +161,10 @@ const Game: FC = () => {
               .map((player) => (
                 <Autocomplete
                   key={player.name}
+                  id={player.name}
                   freeSolo
                   options={hints}
-                  value={guesses[player.name] || ''}
+                  inputValue={guesses[player.name] || ''}
                   onInputChange={(_, newValue) =>
                     setGuesses({ ...guesses, [player.name]: newValue })
                   }
