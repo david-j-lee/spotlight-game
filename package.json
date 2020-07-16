@@ -4,13 +4,13 @@
   "private": true,
   "description": "A guessing game for travel lovers.",
   "author": "github.com/david-j-lee",
-  "homepage": "http://david-j-lee.github.io/spotlight-game",
+  "homepage": "https://david-j-lee.github.io/spotlight-game",
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
-    "predeploy": "npm run build",
-    "deploy": "npm run predeploy && gh-pages -d build",
+    "deploy-aws": "npm run build && aws s3 sync build/ s3://daebit.com",
+    "deploy-gh": "npm run build && gh-pages -d build",
     "coverage": "react-scripts test --env=jsdom --coverage"
   },
   "dependencies": {
