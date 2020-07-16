@@ -24,3 +24,17 @@ body,
   background-color: rgba(125, 125, 125, 0.5);
   outline: 1px solid rgba(125, 125, 125, 0.5);
 }
+
+// TODO: Use more specific selector
+.MuiAutocomplete-popper *::-webkit-scrollbar {
+  width: 0.75rem;
+}
+
+.MuiAutocomplete-popper *::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+}
+
+.MuiAutocomplete-popper *::-webkit-scrollbar-thumb {
+  background-color: rgba(125, 125, 125, 0.5);
+  outline: 1px solid rgba(125, 125, 125, 0.5);
+}
