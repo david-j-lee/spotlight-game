@@ -25,7 +25,7 @@ const GameResults: FC = () => {
   const [recordNotFound, setRecordNotFound] = useState(false);
 
   useEffect(() => {
-    let con;
+    let confetti = new Confetti();
 
     if (url && isLoaded) {
       const record = history.find(
@@ -34,19 +34,16 @@ const GameResults: FC = () => {
       if (record) {
         setRecord(record);
         setRecordNotFound(false);
-        con = new Confetti();
-        // TODO: Fix
-        // @ts-ignore
-        con.startConfetti();
-        setTimeout(() => con.stopConfetti(), 3000);
+        confetti.startConfetti();
+        setTimeout(() => confetti.stopConfetti(), 3000);
       } else {
         setRecordNotFound(true);
       }
     }
 
     return () => {
-      if (con) {
-        con.stopConfetti();
+      if (confetti) {
+        confetti.stopConfetti();
       }
     };
   }, [isLoaded, url, history]);

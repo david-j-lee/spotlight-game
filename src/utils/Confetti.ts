@@ -123,7 +123,7 @@ class Confetti {
     }
   }
 
-  startConfetti(timeout, min, max) {
+  startConfetti(timeout?, min?, max?) {
     var width = window.innerWidth;
     var height = window.innerHeight;
     var frameInterval = this.frameInterval;
@@ -200,8 +200,6 @@ class Confetti {
 
   toggleConfetti() {
     if (this.streamingConfetti) this.stopConfetti();
-    // TODO: Fix
-    // @ts-ignore
     else this.startConfetti();
   }
 
