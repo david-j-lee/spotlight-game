@@ -1,4 +1,3 @@
-import { Moment } from 'moment';
 import IGuesses from './IGuesses';
 
 export default interface IGameResultsDb {
