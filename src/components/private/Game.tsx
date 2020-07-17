@@ -223,10 +223,10 @@ const Game: FC = () => {
           <div className={[classes.guesses, 'styled-scrollbar'].join(' ')}>
             {players
               .filter((player) => player.playing)
-              .sort(
-                (a, b) =>
-                  guesses[a.name] &&
-                  guesses[a.name].localeCompare(guesses[b.name]),
+              .sort((a, b) =>
+                guesses[a.name]
+                  ? guesses[a.name].localeCompare(guesses[b.name])
+                  : undefined,
               )
               .map((player) => (
                 <Button
