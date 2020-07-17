@@ -61,7 +61,7 @@ const Lobby: FC = () => {
       <div className={['styled-scrollbar', classes.players].join(' ')}>
         {players
           .filter((player) => player.active)
-          .sort((a: any, b: any) => a.name - b.name)
+          .sort((a: any, b: any) => a.name.localeCompare(b.name))
           .map((player) => {
             if (player.name !== 'No one') {
               return (

@@ -10,7 +10,7 @@ import Typography from '@material-ui/core/Typography';
 
 import { useContext } from './../../context';
 
-const WinningStats: FC = () => {
+const LocationStats: FC = () => {
   const classes = useStyles();
   const [{ stats }] = useContext();
   const { history } = stats;
@@ -55,8 +55,8 @@ const WinningStats: FC = () => {
         }
         return acc;
       }, {} as any);
-    const favoriteGuesses = Object.entries(groupedGuesses).map(
-      ([key, value]: [any, any]) => ({
+    const favoriteGuesses = Object.entries(groupedGuesses)
+      .map(([key, value]: [any, any]) => ({
         user: key,
         guesses: Object.entries(value)
           .map(([x, y]) => ({
@@ -64,8 +64,8 @@ const WinningStats: FC = () => {
             count: y,
           }))
           .sort((a: any, b: any) => b.count - a.count),
-      }),
-    );
+      }))
+      .sort((a, b) => a.user.localeCompare(b.user));
     setFavoriteGuesses(favoriteGuesses);
   }, [history]);
 
@@ -158,4 +158,4 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
-export default WinningStats;
+export default LocationStats;

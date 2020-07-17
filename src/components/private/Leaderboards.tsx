@@ -8,7 +8,7 @@ import HomeIcon from '@material-ui/icons/Home';
 import TopThree from './TopThree';
 import PlayerStats from './PlayerStats';
 import GameResultsListing from './GameResultsListing';
-import WinningStats from './WinningStats';
+import LocationStats from './LocationStats';
 
 interface IProps {}
 
@@ -34,7 +34,7 @@ const Leaderboards: FC<IProps> = () => {
           <TopThree />
         </div>
         <div className={classes.leftRow}>
-          <WinningStats />
+          <LocationStats />
         </div>
         <div className={classes.leftRow}>
           <PlayerStats />
