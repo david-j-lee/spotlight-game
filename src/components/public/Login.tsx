@@ -1,6 +1,6 @@
 import React, { FC, useState, FormEvent } from 'react';
 import { Redirect } from 'react-router-dom';
-import firebase, { auth } from '../firebase';
+import firebase, { auth } from '../../firebase';
 
 import { makeStyles, Theme } from '@material-ui/core';
 import Alert from '@material-ui/lab/Alert';
@@ -8,7 +8,7 @@ import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 
-import { useContext } from '../context';
+import { useContext } from '../../context';
 
 const Login: FC = () => {
   const classes = useStyles();
