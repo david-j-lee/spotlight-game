@@ -170,6 +170,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     marginBottom: theme.spacing(),
   },
   cardContent: {
+    width: '100%',
     overflow: 'hidden',
   },
   media: {
