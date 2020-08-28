@@ -78,7 +78,7 @@ const Game: FC = () => {
 
   const handleOnSkipDialogResultExited = () => {
     setSkipDialogResultOpen(false);
-    skipImage();
+    skipImage({});
   };
 
   const handleSkipDeclareWinnerDialogClick = () => {
