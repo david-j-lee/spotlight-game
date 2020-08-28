@@ -3,7 +3,6 @@ import React, { FC, useEffect, useState } from 'react';
 import { makeStyles, Theme, fade } from '@material-ui/core';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
-import CardMedia from '@material-ui/core/CardMedia';
 import Link from '@material-ui/core/Link';
 import Typography from '@material-ui/core/Typography';
 
