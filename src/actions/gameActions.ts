@@ -2,7 +2,6 @@ import moment from 'moment';
 import firebase from '../firebase';
 
 import { data } from '../data/contents.json';
-import { INITIAL_STATE } from './../context';
 import IState from './../interfaces/IState';
 import IGameResults from './../interfaces/IGameResults';
 import IGuesses from '../interfaces/IGuesses';
@@ -81,7 +80,7 @@ export const gameActions = {
       };
     };
   },
-  skipImage() {
+  skipImage(guesses: IGuesses) {
     return (state: IState): IState => {
       const gamesRef = firebase.database().ref(state.auth.userId + '/games');
       const skippedGame: IGameResultsDb = {
@@ -89,7 +88,7 @@ export const gameActions = {
         imageSource: state.game.image?.source || '',
         date: new Date().toISOString(),
         winner: 'SKIPPED',
-        guesses: {},
+        guesses,
         skipped: true,
       };
       gamesRef.push(skippedGame);
@@ -102,35 +101,14 @@ export const gameActions = {
         stats: {
           ...state.stats,
           history: [
-            ...state.stats.history,
             {
               ...skippedGame,
               momentDate: moment(skippedGame.date),
-              guesses: {},
             } as IGameResults,
+            ...state.stats.history,
           ],
         },
       };
-    };
-  },
-  skipImageAndReload() {
-    return (state: IState): IState => {
-      const gamesRef = firebase.database().ref(state.auth.userId + '/games');
-      const skippedGame: IGameResultsDb = {
-        location: state.game.image?.caption || '',
-        imageSource: state.game.image?.source || '',
-        date: new Date().toISOString(),
-        winner: 'SKIPPED',
-        guesses: {},
-        skipped: true,
-      };
-      gamesRef.push(skippedGame);
-      return INITIAL_STATE;
-    };
-  },
-  resetGame() {
-    return (): IState => {
-      return INITIAL_STATE;
     };
   },
   toggleUserPlayingState(name: string) {
@@ -145,17 +123,6 @@ export const gameActions = {
             }
             return player;
           }),
-        },
-      };
-    };
-  },
-  updateGuesses(guesses: IGuesses) {
-    return (state: IState): IState => {
-      return {
-        ...state,
-        game: {
-          ...state.game,
-          guesses,
         },
       };
     };

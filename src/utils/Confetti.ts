@@ -20,6 +20,7 @@ class Confetti {
   lastFrameTime: number;
   particles: any[];
   waveAngle: number;
+  fillText?: string;
   context: any;
 
   constructor() {
@@ -63,6 +64,7 @@ class Confetti {
     this.lastFrameTime = Date.now();
     this.particles = [];
     this.waveAngle = 0;
+    this.fillText = undefined;
     this.context = null;
 
     this.resetParticle = this.resetParticle.bind(this);
@@ -70,7 +72,7 @@ class Confetti {
     this.toggleConfettiPause = this.toggleConfettiPause.bind(this);
   }
 
-  resetParticle(particle, width, height) {
+  resetParticle(particle: any, width: number, height: number) {
     particle.color =
       this.colors[(Math.random() * this.colors.length) | 0] +
       (this.alpha + ')');
@@ -87,8 +89,11 @@ class Confetti {
   }
 
   toggleConfettiPause() {
-    if (this.pause) this.resumeConfetti();
-    else this.pauseConfetti();
+    if (this.pause) {
+      this.resumeConfetti();
+    } else {
+      this.pauseConfetti();
+    }
   }
 
   isConfettiPaused() {
@@ -111,8 +116,8 @@ class Confetti {
       this.context.clearRect(0, 0, window.innerWidth, window.innerHeight);
       this.animationTimer = null;
     } else {
-      var now = Date.now();
-      var delta = now - this.lastFrameTime;
+      const now = Date.now();
+      const delta = now - this.lastFrameTime;
       if (!this.supportsAnimationFrame || delta > this.frameInterval) {
         this.context.clearRect(0, 0, window.innerWidth, window.innerHeight);
         this.updateParticles();
@@ -123,10 +128,10 @@ class Confetti {
     }
   }
 
-  startConfetti(timeout?, min?, max?) {
-    var width = window.innerWidth;
-    var height = window.innerHeight;
-    var frameInterval = this.frameInterval;
+  startConfetti(timeout?: number, min?: number, max?: number, text?: string) {
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+    const frameInterval = this.frameInterval;
     window.requestAnimationFrame = (function () {
       return (
         window.requestAnimationFrame ||
@@ -139,7 +144,7 @@ class Confetti {
         }
       );
     })();
-    var canvas = document.getElementById(
+    let canvas = document.getElementById(
       'confetti-canvas',
     ) as HTMLCanvasElement;
     if (canvas === null) {
@@ -161,24 +166,35 @@ class Confetti {
         true,
       );
       this.context = canvas.getContext('2d');
-    } else if (this.context === null) this.context = canvas.getContext('2d');
-    var count = this.maxCount;
+    } else if (this.context === null) {
+      this.context = canvas.getContext('2d');
+    }
+    this.fillText = text;
+
+    let count = this.maxCount;
     if (min) {
       if (max) {
-        if (min === max) count = this.particles.length + max;
-        else {
+        if (min === max) {
+          count = this.particles.length + max;
+        } else {
           if (min > max) {
-            var temp = min;
+            const temp = min;
             min = max;
             max = temp;
           }
           count =
             this.particles.length + ((Math.random() * (max - min) + min) | 0);
         }
-      } else count = this.particles.length + min;
-    } else if (max) count = this.particles.length + max;
-    while (this.particles.length < count)
+      } else {
+        count = this.particles.length + min;
+      }
+    } else if (max) {
+      count = this.particles.length + max;
+    }
+
+    while (this.particles.length < count) {
       this.particles.push(this.resetParticle({}, width, height));
+    }
     this.streamingConfetti = true;
     this.pause = false;
     this.runAnimation.bind(this);
@@ -199,46 +215,56 @@ class Confetti {
   }
 
   toggleConfetti() {
-    if (this.streamingConfetti) this.stopConfetti();
-    else this.startConfetti();
+    if (this.streamingConfetti) {
+      this.stopConfetti();
+    } else {
+      this.startConfetti();
+    }
   }
 
   isConfettiRunning() {
     return this.streamingConfetti;
   }
 
-  drawParticles(context) {
-    var particle;
-    var x, x2, y2;
-    for (var i = 0; i < this.particles.length; i++) {
+  drawParticles(context: any) {
+    let particle: any;
+    let x: any, x2: any, y2: any;
+    for (let i = 0; i < this.particles.length; i++) {
       particle = this.particles[i];
       context.beginPath();
-      context.lineWidth = particle.diameter;
       x2 = particle.x + particle.tilt;
       x = x2 + particle.diameter / 2;
       y2 = particle.y + particle.tilt + particle.diameter / 2;
-      if (this.gradient) {
-        var gradient = context.createLinearGradient(x, particle.y, x2, y2);
-        gradient.addColorStop('0', particle.color);
-        gradient.addColorStop('1.0', particle.color2);
-        context.strokeStyle = gradient;
-      } else context.strokeStyle = particle.color;
-      context.moveTo(x, particle.y);
-      context.lineTo(x2, y2);
-      context.stroke();
+      if (this.fillText) {
+        context.fillText(this.fillText, x2, y2);
+        context.font = '30px sans-serif';
+      } else {
+        context.lineWidth = particle.diameter;
+        if (this.gradient) {
+          const gradient = context.createLinearGradient(x, particle.y, x2, y2);
+          gradient.addColorStop('0', particle.color);
+          gradient.addColorStop('1.0', particle.color2);
+          context.strokeStyle = gradient;
+        } else {    
+          context.strokeStyle = particle.color;
+        }
+        context.moveTo(x, particle.y);
+        context.lineTo(x2, y2);
+        context.stroke();
+      }
     }
   }
 
   updateParticles() {
-    var width = window.innerWidth;
-    var height = window.innerHeight;
-    var particle;
+    let particle: any;
+    const width = window.innerWidth;
+    const height = window.innerHeight;
     this.waveAngle += 0.01;
-    for (var i = 0; i < this.particles.length; i++) {
+    for (let i = 0; i < this.particles.length; i++) {
       particle = this.particles[i];
-      if (!this.streamingConfetti && particle.y < -15)
+      if (!this.streamingConfetti && particle.y < -15) {
         particle.y = height + 100;
-      else {
+      } else {
         particle.tiltAngle += particle.tiltAngleIncrement;
         particle.x += Math.sin(this.waveAngle) - 0.5;
         particle.y +=
@@ -246,9 +272,9 @@ class Confetti {
         particle.tilt = Math.sin(particle.tiltAngle) * 15;
       }
       if (particle.x > width + 20 || particle.x < -20 || particle.y > height) {
-        if (this.streamingConfetti && this.particles.length <= this.maxCount)
+        if (this.streamingConfetti && this.particles.length <= this.maxCount) {
           this.resetParticle(particle, width, height);
-        else {
+        } else {
           this.particles.splice(i, 1);
           i--;
         }

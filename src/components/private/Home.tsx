@@ -10,6 +10,7 @@ import ListIcon from '@material-ui/icons/List';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 
 import { useContext } from '../../context';
+import LastThreeWinners from './LastThreeWinners';
 import TopThree from './TopThree';
 import Spotlight from '../../img/spotlight.png';
 
@@ -31,7 +32,7 @@ const Home: FC<IProps> = () => {
           <img src={Spotlight} alt="logo" className={classes.image} />
         </div>
         <div>
-          <Typography variant="h1" className={classes.title}>
+          <Typography variant="h2" className={classes.title}>
             <small>INTO THE </small>
             <strong>SPOTLIGHT</strong>
           </Typography>
@@ -40,7 +41,10 @@ const Home: FC<IProps> = () => {
           </Typography>
         </div>
       </div>
-      <TopThree />
+      <div className={[classes.stats, 'styled-scrollbar'].join(' ')}>
+        <LastThreeWinners />
+        <TopThree />
+      </div>
       <div className={classes.buttons}>
         <Button
           component={Link}
@@ -107,6 +111,19 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
   title: {
     width: 'min-content',
+  },
+  stats: {
+    width: '100%',
+    maxWidth: 800,
+    margin: `${theme.spacing()}px auto`,
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    overflowX: 'auto',
+    overflowY: 'hidden',
+    '& > div': {
+      flexShrink: 0,
+    },
   },
   buttons: {
     display: 'flex',

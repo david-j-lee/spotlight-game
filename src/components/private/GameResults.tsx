@@ -1,5 +1,5 @@
 import React, { FC, useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link as RouterLink, useParams } from 'react-router-dom';
 
 import { makeStyles, Theme } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
@@ -7,9 +7,11 @@ import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
 import CardMedia from '@material-ui/core/CardMedia';
 import Divider from '@material-ui/core/Divider';
+import Link from '@material-ui/core/Link';
 import Typography from '@material-ui/core/Typography';
 
 import HomeIcon from '@material-ui/icons/Home';
+import OpenInNewIcon from '@material-ui/icons/OpenInNew';
 
 import { useContext } from '../../context';
 import IGameResults from '../../interfaces/IGameResults';
@@ -24,6 +26,12 @@ const GameResults: FC = () => {
   const [record, setRecord] = useState<IGameResults | undefined>(undefined);
   const [recordNotFound, setRecordNotFound] = useState(false);
 
+  const handleImageClick = () => {
+    if (record) {
+      window.open(record.imageSource);
+    }
+  };
+
   useEffect(() => {
     let confetti = new Confetti();
 
@@ -34,7 +42,11 @@ const GameResults: FC = () => {
       if (record) {
         setRecord(record);
         setRecordNotFound(false);
-        confetti.startConfetti();
+        if (record.winner === 'No one') {
+          confetti.startConfetti(undefined, undefined, undefined, '💩');
+        } else {
+          confetti.startConfetti();
+        }
         setTimeout(() => confetti.stopConfetti(), 3000);
       } else {
         setRecordNotFound(true);
@@ -49,11 +61,11 @@ const GameResults: FC = () => {
   }, [isLoaded, url, history]);
 
   if (recordNotFound) {
-    return <div>Cannot find record.</div>;
+    return <div className={classes.fullScreenText}>Cannot find record.</div>;
   }
 
   if (!record) {
-    return <div>Loading . . .</div>;
+    return <div className={classes.fullScreenText}>Loading . . .</div>;
   }
 
   return (
@@ -62,21 +74,27 @@ const GameResults: FC = () => {
       <Typography variant="h3">You are the winner!!!</Typography>
       <Divider />
       <Card className={classes.card}>
-        <CardHeader title={record.location} />
+        <CardHeader
+          className={classes.cardHeader}
+          title={
+            <Link href={record.imageSource} target="_blank" rel="noreferrer">
+              {record.location} <OpenInNewIcon />
+            </Link>
+          }
+        />
         <CardMedia
           className={classes.media}
           image={record.imageSource}
+          onClick={handleImageClick}
           title={record.location}
-        >
-          {record?.location}
-        </CardMedia>
+        ></CardMedia>
       </Card>
       <Button
         color="primary"
         variant="contained"
         size="large"
         startIcon={<HomeIcon />}
-        component={Link}
+        component={RouterLink}
         to="/"
       >
         Back to Home
@@ -95,12 +113,32 @@ const useStyles = makeStyles((theme: Theme) => ({
     alignItems: 'center',
     padding: theme.spacing(2),
   },
+  fullScreenText: {
+    fontSize: '3rem',
+    height: '100%',
+    width: '100%',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   media: {
     height: 0,
     paddingTop: '56.25%', // 16:9
+    cursor: 'pointer',
   },
   card: {
     margin: theme.spacing(4),
+  },
+  cardHeader: {
+    '& a': {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      color: theme.palette.text.primary,
+      '& svg': {
+        marginLeft: theme.spacing(),
+      },
+    },
   },
 }));
 

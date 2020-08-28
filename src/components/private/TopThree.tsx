@@ -106,14 +106,13 @@ const useStyle = makeStyles((theme: Theme) => ({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    width: '100%',
-    maxWidth: 400,
     '& > div': {
       margin: theme.spacing(2, 1),
-      width: '33.3%',
+      width: 100,
       whiteSpace: 'nowrap',
       textAlign: 'center',
       overflow: 'unset',
+      flexShrink: 0,
       '& p': {
         textOverflow: 'ellipsis',
         overflow: 'hidden',
