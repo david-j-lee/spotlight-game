@@ -81,7 +81,7 @@ export const gameActions = {
       };
     };
   },
-  skipImage() {
+  skipImage(guesses: IGuesses) {
     return (state: IState): IState => {
       const gamesRef = firebase.database().ref(state.auth.userId + '/games');
       const skippedGame: IGameResultsDb = {
@@ -89,7 +89,7 @@ export const gameActions = {
         imageSource: state.game.image?.source || '',
         date: new Date().toISOString(),
         winner: 'SKIPPED',
-        guesses: {},
+        guesses: guesses || {},
         skipped: true,
       };
       gamesRef.push(skippedGame);
@@ -106,7 +106,7 @@ export const gameActions = {
             {
               ...skippedGame,
               momentDate: moment(skippedGame.date),
-              guesses: {},
+              guesses: skippedGame.guesses,
             } as IGameResults,
           ],
         },

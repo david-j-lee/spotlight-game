@@ -48,7 +48,11 @@ const Game: FC = () => {
     false,
   );
   const [skipDialogOpen, setSkipDialogOpen] = useState(false);
-  const [skipImageOnDialogClose, setSkipImageOnDialogClose] = useState(false);
+  const [skipDialogResultOpen, setSkipDialogResultOpen] = useState(false);
+  const [
+    skipOnDeclareWinnerDialogClose,
+    setSkipOnDeclareWinnerDialogClose,
+  ] = useState(false);
   const [error, setError] = useState('');
   const [guesses, setGuesses] = useState({});
 
@@ -67,12 +71,27 @@ const Game: FC = () => {
     setSkipDialogOpen(true);
   };
 
-  const handleSkipDialogClose = () => {
-    if (skipImageOnDialogClose) {
-      skipImage();
-      setSkipImageOnDialogClose(false);
-    }
+  const handleSkipDialogClick = () => {
     setSkipDialogOpen(false);
+    setSkipDialogResultOpen(true);
+  };
+
+  const handleOnSkipDialogResultExited = () => {
+    setSkipDialogResultOpen(false);
+    skipImage();
+  };
+
+  const handleSkipDeclareWinnerDialogClick = () => {
+    setSkipOnDeclareWinnerDialogClose(true);
+    setDeclareWinnerDialogOpen(false);
+  };
+
+  const handleOnDeclareWinnerDialogExited = () => {
+    if (skipOnDeclareWinnerDialogClose) {
+      setSkipOnDeclareWinnerDialogClose(false);
+      skipImage(guesses);
+      setGuesses({});
+    }
   };
 
   const submitGuesses = () => {
@@ -197,10 +216,9 @@ const Game: FC = () => {
       {/* Dialog used to declare the winner */}
       <Dialog
         onClose={() => setDeclareWinnerDialogOpen(false)}
+        onExited={handleOnDeclareWinnerDialogExited}
         open={declareWinnerDialogOpen}
-        classes={{
-          paper: classes.dialogPaper,
-        }}
+        classes={{ paper: classes.dialogPaper }}
       >
         <DialogTitle>{image.caption}</DialogTitle>
         <div className={classes.dialogContent}>
@@ -221,64 +239,82 @@ const Game: FC = () => {
             ></iframe>
           </div>
           <div className={[classes.guesses, 'styled-scrollbar'].join(' ')}>
-            {players
-              .filter((player) => player.playing)
-              .sort((a, b) =>
-                guesses[a.name]
-                  ? guesses[a.name].localeCompare(guesses[b.name])
-                  : undefined,
-              )
-              .map((player) => (
-                <Button
-                  key={player.name}
-                  variant="outlined"
-                  className={classes.guess}
-                  onClick={() => declareWinner(player.name)}
-                >
-                  {guesses[player.name] ? guesses[player.name] + ' - ' : ''}
-                  {player.name}
-                </Button>
-              ))}
+            <div className={classes.players}>
+              {players
+                .filter((player) => player.playing && player.name !== 'No one')
+                .sort((a, b) =>
+                  guesses[a.name]
+                    ? guesses[a.name].localeCompare(guesses[b.name])
+                    : undefined,
+                )
+                .map((player) => (
+                  <Button
+                    key={player.name}
+                    variant="contained"
+                    className={classes.guess}
+                    onClick={() => declareWinner(player.name)}
+                  >
+                    {guesses[player.name] ? guesses[player.name] + ' - ' : ''}
+                    {player.name}
+                  </Button>
+                ))}
+            </div>
+            <div className={classes.actions}>
+              <Button
+                variant="outlined"
+                onClick={() => declareWinner('No one')}
+              >
+                <span role="img" aria-label="The robots have won">
+                  💩
+                </span>{' '}
+                No one
+              </Button>
+              <Button
+                variant="outlined"
+                onClick={handleSkipDeclareWinnerDialogClick}
+                startIcon={<SkipNextIcon />}
+              >
+                Skip
+              </Button>
+            </div>
           </div>
         </div>
       </Dialog>
       {/* Dialog to skip the image */}
-      <Dialog onClose={handleSkipDialogClose} open={skipDialogOpen}>
-        <DialogTitle>
-          {skipImageOnDialogClose
-            ? image.caption
-            : 'Are you sure you want to skip?'}
-        </DialogTitle>
+      <Dialog open={skipDialogOpen}>
+        <DialogTitle>'Are you sure you want to skip?'</DialogTitle>
         <DialogActions>
-          {!skipImageOnDialogClose && (
-            <>
-              <Button
-                color="primary"
-                variant="contained"
-                onClick={() => setSkipImageOnDialogClose(true)}
-                startIcon={<CheckIcon />}
-              >
-                Yes
-              </Button>
-              <Button
-                variant="outlined"
-                onClick={() => setSkipDialogOpen(false)}
-                startIcon={<ClearIcon />}
-              >
-                No
-              </Button>
-            </>
-          )}
-          {skipImageOnDialogClose && (
-            <Button
-              color="primary"
-              variant="contained"
-              onClick={handleSkipDialogClose}
-              startIcon={<ClearIcon />}
-            >
-              Close
-            </Button>
-          )}
+          <Button
+            color="primary"
+            variant="contained"
+            onClick={handleSkipDialogClick}
+            startIcon={<CheckIcon />}
+          >
+            Yes
+          </Button>
+          <Button
+            variant="outlined"
+            onClick={() => setSkipDialogOpen(false)}
+            startIcon={<ClearIcon />}
+          >
+            No
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <Dialog
+        open={skipDialogResultOpen}
+        onExited={handleOnSkipDialogResultExited}
+      >
+        <DialogTitle>{image.caption}</DialogTitle>
+        <DialogActions>
+          <Button
+            color="primary"
+            variant="contained"
+            onClick={() => setSkipDialogResultOpen(false)}
+            startIcon={<ClearIcon />}
+          >
+            Close
+          </Button>
         </DialogActions>
       </Dialog>
       {/* Speed dial of actions */}
@@ -397,7 +433,24 @@ const useStyles = makeStyles((theme: Theme) => ({
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    padding: theme.spacing(),
+    padding: theme.spacing(0, 1, 1, 1),
+  },
+  players: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    flexGrow: 1,
+    width: '100%',
+  },
+  actions: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    width: '100%',
+    '& > button': {
+      width: '100%',
+      marginTop: theme.spacing(),
+    },
   },
   guess: {
     width: '100%',

@@ -34,7 +34,11 @@ const GameResults: FC = () => {
       if (record) {
         setRecord(record);
         setRecordNotFound(false);
-        confetti.startConfetti();
+        if (record.winner === 'No one') {
+          confetti.startConfetti(undefined, undefined, undefined, '💩');
+        } else {
+          confetti.startConfetti();
+        }
         setTimeout(() => confetti.stopConfetti(), 3000);
       } else {
         setRecordNotFound(true);
