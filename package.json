@@ -13,32 +13,40 @@
     "coverage": "react-scripts test --env=jsdom --coverage"
   },
   "dependencies": {
-    "@material-ui/core": "4.11.0",
+    "@material-ui/core": "4.11.1",
     "@material-ui/icons": "4.9.1",
     "@material-ui/lab": "4.0.0-alpha.56",
     "@techempower/react-governor": "0.7.0",
-    "moment": "2.27.0",
-    "react": "16.13.1",
-    "react-dom": "16.13.1",
+    "google-map-react": "2.1.9",
+    "moment": "2.29.1",
+    "react": "17.0.1",
+    "react-dom": "17.0.1",
     "react-router-dom": "5.2.0",
-    "react-scripts": "3.4.1"
+    "react-scripts": "4.0.1",
+    "react-simple-maps": "2.3.0",
+    "web-vitals": "1.0.1"
   },
   "devDependencies": {
-    "@testing-library/jest-dom": "5.11.0",
-    "@testing-library/react": "10.4.6",
-    "@testing-library/user-event": "12.0.11",
-    "@types/jest": "26.0.4",
-    "@types/node": "14.0.23",
-    "@types/react": "16.9.43",
-    "@types/react-dom": "16.9.8",
-    "@types/react-router-dom": "5.1.5",
-    "firebase": "7.16.0",
+    "@testing-library/jest-dom": "5.11.6",
+    "@testing-library/react": "11.2.2",
+    "@testing-library/user-event": "12.2.2",
+    "@types/google-map-react": "^2.1.0",
+    "@types/jest": "26.0.15",
+    "@types/node": "14.14.10",
+    "@types/react": "17.0.0",
+    "@types/react-dom": "17.0.0",
+    "@types/react-router-dom": "5.1.6",
+    "@types/react-simple-maps": "1.0.3",
+    "firebase": "8.1.1",
     "gh-pages": "3.1.0",
     "node-sass": "4.14.1",
-    "typescript": "3.9.6"
+    "typescript": "4.1.2"
   },
   "eslintConfig": {
-    "extends": "react-app"
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
   },
   "browserslist": {
     "production": [
