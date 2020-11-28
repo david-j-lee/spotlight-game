@@ -298,7 +298,8 @@ const Game: FC = () => {
               <div className={classes.map}>
                 <GoogleMapReact
                   bootstrapURLKeys={{ key: KEY }}
-                  options={OPTIONS}
+                  options={{ ...OPTIONS, minZoom: 2 }}
+                  hoverDistance={0}
                   center={{
                     lat: geolocation.lat ?? 37.09024,
                     lng: geolocation.lng ?? -95.712891,
