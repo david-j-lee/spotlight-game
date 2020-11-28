@@ -6,4 +6,6 @@ export default interface IPlayer {
   gamesPlayed: number;
   wins: number;
   streak: number;
+  isCurrentChamp?: boolean;
+  currentWinStreak?: number;
 }

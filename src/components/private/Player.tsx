@@ -1,35 +1,36 @@
-import React from 'react';
+import React, { FC } from 'react';
 
 import { makeStyles, Theme } from '@material-ui/core';
 import Typography from '@material-ui/core/Typography';
 
 import { useContext } from '../../context';
-import IPlayer from './../../interfaces/IPlayer';
 
 import Star from '../../img/star.png';
 import StarOff from '../../img/star_off.png';
 import Crown from '../../img/crown.png';
 import CrownOff from '../../img/crown_off.png';
 
+import IPlayer from '../../interfaces/IPlayer';
+
 interface IProps {
   player: IPlayer;
 }
 
-const Player = ({ player }) => {
+const Player: FC<IProps> = ({ player }) => {
   const classes = useStyles();
 
   const [, { toggleUserPlayingState }] = useContext();
 
-  const generateAlt = (isChamp) => {
+  const generateAlt = (isChamp: boolean) => {
     return isChamp ? 'crown' : 'star';
   };
 
-  const getImages = (isChamp) => {
+  const getImages = (isChamp: boolean) => {
     return isChamp ? [Crown, CrownOff] : [Star, StarOff];
   };
 
-  const images = getImages(player.isCurrentChamp);
-  const alt = generateAlt(player.isCurrentChamp);
+  const images = getImages(!!player.isCurrentChamp);
+  const alt = generateAlt(!!player.isCurrentChamp);
 
   return (
     <div

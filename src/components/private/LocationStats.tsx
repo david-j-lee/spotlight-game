@@ -23,7 +23,7 @@ const LocationStats: FC = () => {
       .filter((record) => record.guesses)
       .map((record) => record.guesses[record.winner])
       .filter((record) => record)
-      .reduce((acc: object, record: string) => {
+      .reduce((acc: any, record: string) => {
         if (acc[record]) {
           acc[record].count++;
         } else {

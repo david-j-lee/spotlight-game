@@ -10,6 +10,8 @@ import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import { useContext } from '../../context';
 import Player from './Player';
 
+import IGameResults from '../../interfaces/IGameResults';
+
 const Lobby: FC = () => {
   const classes = useStyles();
   const params: any = useParams();
@@ -28,7 +30,7 @@ const Lobby: FC = () => {
     }
   }, [url, image, getNewImage, setImageWithUrl]);
 
-  const getReigningChampion = (history) => {
+  const getReigningChampion = (history: IGameResults[]) => {
     for (let i = 0; i < history.length; i++) {
       if (history[i].winner !== 'SKIPPED') {
         return history[i].winner;
@@ -37,7 +39,7 @@ const Lobby: FC = () => {
     return '';
   };
 
-  const getCurrentWinStreak = (history) => {
+  const getCurrentWinStreak = (history: IGameResults[]) => {
     const champ = getReigningChampion(history);
     let streak = 0;
     for (let i = 0; i < history.length; i++) {

@@ -7,6 +7,7 @@ import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
 
 import { useContext } from '../../context';
+import IGameResults from './../../interfaces/IGameResults';
 
 import Crown from '../../img/crown.png';
 
@@ -26,7 +27,7 @@ const TopThree: FC = () => {
               moment().subtract(14, 'days').startOf('day'),
             ) && record.winner !== 'SKIPPED',
         )
-        .reduce((acc, record) => {
+        .reduce((acc: any, record: IGameResults) => {
           if (acc[record.winner]) {
             acc[record.winner]++;
           } else {

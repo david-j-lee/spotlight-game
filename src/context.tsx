@@ -1,5 +1,7 @@
 import React from 'react';
-import { useGovernor } from '@techempower/react-governor';
+
+// @ts-ignore
+import { useGovernor } from '@techempower/react-governor'; // TODO: Add types
 
 import IState from './interfaces/IState';
 

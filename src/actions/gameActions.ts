@@ -26,9 +26,10 @@ export const gameActions = {
 
         val = snaps[1].val();
         if (val) {
-          history = Object.values(val)
-            .map((value: any) => ({
+          history = Object.entries(val)
+            .map(([key, value]: [string, any]) => ({
               ...value,
+              id: key,
               momentDate: moment(value.date, [
                 'M/D/YYYY',
                 'YYYY-MM-DDTHH:mm:ss.SSS[Z]',
@@ -91,7 +92,7 @@ export const gameActions = {
         guesses,
         skipped: true,
       };
-      gamesRef.push(skippedGame);
+      gamesRef.push(skippedGame); // TODO: Need to set id on this object
       return {
         ...state,
         game: {
@@ -140,7 +141,7 @@ export const gameActions = {
   },
 };
 
-const getRandomImage = (history: any[]) => {
+const getRandomImage = (history: any[]): any => {
   const entry = data[Math.floor(Math.random() * data.length)];
   if (history.find((e) => e.imageSource === entry.source)) {
     return getRandomImage(history);

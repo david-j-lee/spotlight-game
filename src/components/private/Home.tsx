@@ -58,13 +58,13 @@ const Home: FC<IProps> = () => {
         </Button>
         <Button
           component={Link}
-          to="/leaderboards"
+          to="/stats"
           color="secondary"
           size="large"
           variant="contained"
           startIcon={<ListIcon />}
         >
-          Leaderboards
+          Stats
         </Button>
         <Button
           onClick={logoff}
