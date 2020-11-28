@@ -27,6 +27,7 @@ const MapMarker: FC<IMapMarker> = ({ onClick, className }) => {
   return (
     <div
       onClick={onClick}
+      // TODO: Remove use of inline styling
       style={{
         position: 'absolute',
         transform: 'translate(-50%, -50%)',
@@ -81,6 +82,7 @@ const GameResultsMap: FC<IProps> = () => {
                 lat: 0,
                 lng: 0,
               }}
+              hoverDistance={0}
               defaultZoom={1}
               options={OPTIONS}
             >
