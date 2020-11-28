@@ -32,7 +32,7 @@ import { useContext } from '../../context';
 import IGameResultsDb from '../../interfaces/IGameResultsDb';
 import Map from '../../img/map.png';
 
-import { KEY, getGeolocationUrl } from '../../utils/googlemaps';
+import { KEY, getGeolocationUrl, OPTIONS } from '../../utils/googlemaps';
 
 // TODO: Move into own file
 interface IMapMarker {
@@ -48,7 +48,7 @@ const MapMarker: FC<IMapMarker> = () => {
         pointerEvents: 'none',
       }}
     >
-      <PinIcon color="primary" />
+      <PinIcon color="secondary" />
     </div>
   );
 };
@@ -177,7 +177,7 @@ const Game: FC = () => {
         lat: geolocation.lat,
         lng: geolocation.lng,
       };
-      gamesDb.push(newGame);  // TODO: Need to set id on this object
+      gamesDb.push(newGame); // TODO: Need to set id on this object
 
       players
         .filter((player) => player.playing)
@@ -298,6 +298,7 @@ const Game: FC = () => {
               <div className={classes.map}>
                 <GoogleMapReact
                   bootstrapURLKeys={{ key: KEY }}
+                  options={OPTIONS}
                   center={{
                     lat: geolocation.lat ?? 37.09024,
                     lng: geolocation.lng ?? -95.712891,

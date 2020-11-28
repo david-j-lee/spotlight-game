@@ -1,25 +1,43 @@
 import React, { FC, useState } from 'react';
-
-import {
-  ComposableMap,
-  Geographies,
-  Geography,
-  Marker,
-  ZoomableGroup,
-} from 'react-simple-maps';
+import GoogleMapReact from 'google-map-react';
 
 import { makeStyles, Theme, fade } from '@material-ui/core';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
+import Grid from '@material-ui/core/Grid';
 import Popover from '@material-ui/core/Popover';
 import Typography from '@material-ui/core/Typography';
 
 import { useContext } from '../../context';
 import IGameResults from './../../interfaces/IGameResults';
 
-const GEO_URL =
-  'https://raw.githubusercontent.com/zcreativelabs/react-simple-maps/master/topojson-maps/world-110m.json';
+import TopWinningLocations from './TopWinningLocations';
+
+import { KEY, OPTIONS } from '../../utils/googlemaps';
+
+// TODO: Move into own file
+interface IMapMarker {
+  onClick: any;
+  lat: number;
+  lng: number;
+  className: string;
+}
+const MapMarker: FC<IMapMarker> = ({ onClick, className }) => {
+  return (
+    <div
+      onClick={onClick}
+      style={{
+        position: 'absolute',
+        transform: 'translate(-50%, -50%)',
+        top: '50%',
+        left: '50%',
+        cursor: 'pointer',
+      }}
+      className={className}
+    />
+  );
+};
 
 interface IProps {}
 
@@ -54,40 +72,46 @@ const GameResultsMap: FC<IProps> = () => {
 
   return (
     <div className={['styled-scrollbar', classes.root].join(' ')}>
-      <div className={classes.map}>
-        <ComposableMap>
-          <ZoomableGroup zoom={1}>
-            <Geographies geography={GEO_URL}>
-              {({ geographies }) =>
-                geographies.map((geo) => (
-                  <Geography key={geo.rsmKey} geography={geo} />
-                ))
-              }
-            </Geographies>
-            {history
-              .filter(
-                (gameResult) =>
-                  gameResult.lat !== undefined &&
-                  gameResult.lat !== null &&
-                  gameResult.lng !== undefined &&
-                  gameResult.lng !== null,
-              )
-              .map((gameResult) => (
-                <Marker
-                  key={gameResult.imageSource + gameResult.date}
-                  coordinates={[
-                    gameResult.lng as number,
-                    gameResult.lat as number,
-                  ]}
-                  className={gameResult === selectedMarker ? 'active' : ''}
-                  onClick={(event) => selectMarker(event, gameResult)}
-                >
-                  <circle r={3} />
-                </Marker>
-              ))}
-          </ZoomableGroup>
-        </ComposableMap>
-      </div>
+      <Grid container className={classes.gridContainer}>
+        <Grid item className={classes.gridItem} xs={12} md={9} lg={10}>
+          <div className={classes.map}>
+            <GoogleMapReact
+              bootstrapURLKeys={{ key: KEY }}
+              center={{
+                lat: 0,
+                lng: 0,
+              }}
+              defaultZoom={1}
+              options={OPTIONS}
+            >
+              {history
+                .filter(
+                  (gameResult) =>
+                    gameResult.lat !== undefined &&
+                    gameResult.lat !== null &&
+                    gameResult.lng !== undefined &&
+                    gameResult.lng !== null,
+                )
+                .map((gameResult) => (
+                  <MapMarker
+                    key={gameResult.imageSource + gameResult.date}
+                    className={[
+                      'marker',
+                      gameResult.winner === 'No one' ? 'no-one' : 'someone',
+                      gameResult === selectedMarker ? 'active' : '',
+                    ].join(' ')}
+                    lat={gameResult.lat as number}
+                    lng={gameResult.lng as number}
+                    onClick={(event: any) => selectMarker(event, gameResult)}
+                  />
+                ))}
+            </GoogleMapReact>
+          </div>
+        </Grid>
+        <Grid item className={classes.gridItem} xs={12} md={3} lg={2}>
+          <TopWinningLocations />
+        </Grid>
+      </Grid>
       <Popover
         open={!!markerPopover}
         anchorEl={markerPopover}
@@ -133,21 +157,28 @@ const useStyles = makeStyles((theme: Theme) => ({
   root: {
     height: '100%',
     overflow: 'hidden',
-    '& .rsm-geography': {
-      fill: '#333',
-      stroke: '#555',
-    },
-    '& .rsm-marker': {
+    '& .marker': {
+      width: 15,
+      height: 15,
+      borderRadius: '100%',
       '&.active': {
-        stroke: 'rgba(61, 227, 105, 0.5)',
-        '& circle': {
-          fill: 'transparent',
-        },
+        border: '1px solid rgba(61, 227, 105, 0.5)',
+        background: 'transparent',
       },
-      '& circle': {
-        fill: 'rgba(61, 227, 105, 0.5)',
+      '&.someone': {
+        background: 'rgba(61, 227, 105, 0.5)',
+      },
+      '&.no-one': {
+        background: 'rgba(209, 35, 0, 0.5)',
       },
     },
+  },
+  gridContainer: {
+    height: '100%',
+  },
+  gridItem: {
+    height: '100%',
+    overflowY: 'hidden',
   },
   map: {
     background: '#111',
@@ -176,6 +207,8 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
   image: {
     height: 140,
+    background: 'black',
+    backgroundSize: 'cover',
   },
 }));
 

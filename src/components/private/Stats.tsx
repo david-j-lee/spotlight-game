@@ -8,6 +8,9 @@ import Tab from '@material-ui/core/Tab/Tab';
 import Tabs from '@material-ui/core/Tabs/Tabs';
 
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
+import LocationOnIcon from '@material-ui/icons/LocationOn';
+import ListIcon from '@material-ui/icons/List';
+import PublicIcon from '@material-ui/icons/Public';
 
 import GameResultsGrid from './GameResultsGrid';
 import Leaderboards from './Leaderboards';
@@ -70,7 +73,7 @@ const Stats: FC<IProps> = () => {
     <div className={classes.root}>
       {value && (
         <>
-          <AppBar position="static">
+          <AppBar position="static" className={classes.appBar}>
             <IconButton
               edge="start"
               color="inherit"
@@ -87,13 +90,24 @@ const Stats: FC<IProps> = () => {
               aria-label="simple tabs example"
               centered
             >
-              <Tab value="places" label="Places" {...a11yProps('places')} />
+              <Tab
+                value="places"
+                label="Places"
+                icon={<LocationOnIcon />}
+                {...a11yProps('places')}
+              />
               <Tab
                 value="leaderboards"
                 label="Leaderboards"
+                icon={<ListIcon />}
                 {...a11yProps('leaderboards')}
               />
-              <Tab value="map" label="Map" {...a11yProps('map')} />
+              <Tab
+                value="map"
+                label="Map"
+                icon={<PublicIcon />}
+                {...a11yProps('map')}
+              />
             </Tabs>
           </AppBar>
           <div className={classes.content}>
@@ -121,9 +135,14 @@ const useStyles = makeStyles((theme: Theme) => ({
     display: 'flex',
     flexDirection: 'column',
   },
+  appBar: {
+    position: 'relative',
+  },
   backToHome: {
     position: 'absolute',
     left: theme.spacing(2),
+    top: '50%',
+    transform: 'translateY(-50%)',
     zIndex: theme.zIndex.appBar + 1,
   },
   content: {

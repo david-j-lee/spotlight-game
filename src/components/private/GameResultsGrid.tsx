@@ -1,25 +1,39 @@
 import React, { FC, useState, useRef, useEffect, useMemo } from 'react';
 
 import { makeStyles, Theme } from '@material-ui/core';
+import { TransitionProps } from '@material-ui/core/transitions/transition';
+import AppBar from '@material-ui/core/AppBar';
 import Button from '@material-ui/core/Button';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
 import Chip from '@material-ui/core/Chip';
+import Dialog from '@material-ui/core/Dialog';
 import Divider from '@material-ui/core/Divider';
 import Grid from '@material-ui/core/Grid';
+import IconButton from '@material-ui/core/IconButton';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import Link from '@material-ui/core/Link';
+import Slide from '@material-ui/core/Slide';
 import TextField from '@material-ui/core/TextField';
+import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 
+import LinkIcon from '@material-ui/icons/Link';
 import SearchIcon from '@material-ui/icons/Search';
+import CloseIcon from '@material-ui/icons/Close';
 
 import { useContext } from '../../context';
 
 const WINNER_EMOJIS = ['🎉', '😊', '🥳', '🎊'];
 const NO_ONE_EMOJIS = ['🤖', '💩', '🖥️', '👾', '💻'];
 const PAGE_SIZE = 36;
+const Transition = React.forwardRef(function Transition(
+  props: TransitionProps & { children?: React.ReactElement },
+  ref: React.Ref<unknown>,
+) {
+  return <Slide direction="down" ref={ref} {...props} />;
+});
 
 interface IProps {}
 
@@ -32,6 +46,9 @@ const GameResultsGrid: FC<IProps> = () => {
   const [filteredListing, setFilteredListing] = useState<any[]>([]);
   const [search, setSearch] = useState('');
   const searchTimer = useRef<any>(null);
+  const [dialogImageSource, setDialogImageSource] = useState<string | boolean>(
+    false,
+  );
 
   const listing = useMemo(
     () => filteredListing.slice(0, PAGE_SIZE * currentPage),
@@ -99,6 +116,7 @@ const GameResultsGrid: FC<IProps> = () => {
               )}
               <CardContent
                 className={[classes.cardContent, 'card-content'].join(' ')}
+                onClick={() => handleClickOpen(record.imageSource)}
               >
                 <div>
                   <Typography variant="caption">
@@ -110,7 +128,7 @@ const GameResultsGrid: FC<IProps> = () => {
                   component={Link}
                   href={record.imageSource}
                 >
-                  {record.location}
+                  {record.location} <LinkIcon />
                 </Typography>
                 <Divider className={classes.divider} />
                 {record.guesses &&
@@ -138,6 +156,14 @@ const GameResultsGrid: FC<IProps> = () => {
     [listing, classes],
   );
 
+  const handleClickOpen = (source: string) => {
+    setDialogImageSource(source);
+  };
+
+  const handleClose = () => {
+    setDialogImageSource(false);
+  };
+
   const handleSearchInputChange = (event: any) => {
     const newSearchValue = event.target.value;
     setSearch(newSearchValue);
@@ -147,10 +173,20 @@ const GameResultsGrid: FC<IProps> = () => {
     searchTimer.current = setTimeout(() => {
       setCurrentPage(1);
       if (newSearchValue) {
+        const newSearchValueLower = newSearchValue.toLowerCase();
         setFilteredListing(
-          history.filter((record) =>
-            record.location.toLowerCase().includes(newSearchValue),
-          ),
+          history.filter((record) => {
+            return (
+              record.location.toLowerCase().includes(newSearchValueLower) ||
+              record.winner.toLowerCase().includes(newSearchValueLower) ||
+              record.date.includes(newSearchValueLower) ||
+              `${record.lat},${record.lng}`.includes(newSearchValueLower) ||
+              (record.guesses &&
+                Object.values(record.guesses).find((value) =>
+                  value.toLowerCase().includes(newSearchValueLower),
+                ))
+            );
+          }),
         );
       } else {
         setFilteredListing(history);
@@ -200,6 +236,31 @@ const GameResultsGrid: FC<IProps> = () => {
           )}
         </Grid>
       </div>
+      <Dialog
+        fullScreen
+        open={Boolean(dialogImageSource)}
+        onClose={handleClose}
+        TransitionComponent={Transition}
+      >
+        <AppBar className={classes.appBar}>
+          <Toolbar>
+            <IconButton
+              edge="start"
+              color="inherit"
+              onClick={handleClose}
+              aria-label="close"
+            >
+              <CloseIcon />
+            </IconButton>
+          </Toolbar>
+        </AppBar>
+        <div
+          style={{
+            background: `#000 url(${dialogImageSource}) center / contain no-repeat`,
+          }}
+          className={classes.dialogImage}
+        ></div>
+      </Dialog>
     </div>
   );
 };
@@ -213,7 +274,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     flexDirection: 'column',
   },
   search: {
-    margin: theme.spacing(1, 'auto'),
+    margin: theme.spacing(2, 'auto', 1, 'auto'),
     maxWidth: 800,
     width: '100%',
   },
@@ -260,6 +321,13 @@ const useStyles = makeStyles((theme: Theme) => ({
     bottom: 0,
     left: 0,
     right: 0,
+    '& a': {
+      color: theme.palette.text.primary,
+      display: 'inline',
+      '& svg': {
+        fontSize: theme.typography.fontSize,
+      },
+    },
   },
   skipped: {
     opacity: 0.7,
@@ -277,6 +345,13 @@ const useStyles = makeStyles((theme: Theme) => ({
   viewMore: {
     display: 'flex',
     justifyContent: 'center',
+  },
+  appBar: {
+    position: 'relative',
+  },
+  dialogImage: {
+    height: '100%',
+    width: '100%',
   },
 }));
 
