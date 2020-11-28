@@ -2,10 +2,14 @@ import moment from 'moment';
 import firebase from '../firebase';
 
 import { data } from '../data/contents.json';
+
+import { IGetState } from '../context';
 import IState from './../interfaces/IState';
 import IGameResults from './../interfaces/IGameResults';
-import IGuesses from '../interfaces/IGuesses';
 import IGameResultsDb from './../interfaces/IGameResultsDb';
+import IImage from './../interfaces/IImage';
+
+import { getGeolocationUrl } from '../utils/googlemaps';
 
 export const gameActions = {
   async loadAssets(user: string) {
@@ -59,45 +63,47 @@ export const gameActions = {
       };
     };
   },
-  setImageWithUrl(url: string) {
+  async setImageWithUrl(url: string) {
+    const image: IImage = {
+      ...data.find((image) => image.source === url),
+    } as IImage;
+    const geolocation = await getGeolocation(image.caption);
+    if (geolocation) {
+      image.lat = geolocation.lat;
+      image.lng = geolocation.lng;
+    }
     return (state: IState): IState => {
       return {
         ...state,
         game: {
           ...state.game,
-          image: data.find((image) => image.source === url),
+          image,
         },
       };
     };
   },
-  getNewImage() {
+  async getNewImage(getState: IGetState) {
+    const image = await getRandomImage(getState().stats.history);
     return (state: IState): IState => {
       return {
         ...state,
         game: {
           ...state.game,
-          image: getRandomImage(state.stats.history),
+          image,
         },
       };
     };
   },
-  skipImage(guesses: IGuesses) {
+  async skipImage(skippedGame: IGameResultsDb, getState: IGetState) {
+    const image = await getRandomImage(getState().stats.history);
     return (state: IState): IState => {
       const gamesRef = firebase.database().ref(state.auth.userId + '/games');
-      const skippedGame: IGameResultsDb = {
-        location: state.game.image?.caption || '',
-        imageSource: state.game.image?.source || '',
-        date: new Date().toISOString(),
-        winner: 'SKIPPED',
-        guesses,
-        skipped: true,
-      };
       gamesRef.push(skippedGame); // TODO: Need to set id on this object
       return {
         ...state,
         game: {
           ...state.game,
-          image: getRandomImage(state.stats.history),
+          image,
         },
         stats: {
           ...state.stats,
@@ -141,10 +147,15 @@ export const gameActions = {
   },
 };
 
-const getRandomImage = (history: any[]): any => {
-  const entry = data[Math.floor(Math.random() * data.length)];
+const getRandomImage = async (history: any[]): Promise<any> => {
+  const entry: any = { ...data[Math.floor(Math.random() * data.length)] };
   if (history.find((e) => e.imageSource === entry.source)) {
-    return getRandomImage(history);
+    return await getRandomImage(history);
+  }
+  const geolocation = await getGeolocation(entry.caption);
+  if (geolocation) {
+    entry.lat = geolocation.lat;
+    entry.lng = geolocation.lng;
   }
   return entry;
 };
@@ -185,4 +196,26 @@ const getHints = (history: any[]) => {
     }
   });
   return hints.sort((a: string, b: string) => a.localeCompare(b));
+};
+
+const getGeolocation = async (location: string | undefined) => {
+  if (location) {
+    return await fetch(getGeolocationUrl(location))
+      .then((res) => res.json())
+      .then((res) => {
+        if (res.results && res.results[0]) {
+          const geoLoc = res.results[res.results.length - 1].geometry.location;
+          return {
+            lat: geoLoc.lat,
+            lng: geoLoc.lng,
+          };
+        } else {
+          throw new Error('Unable to find location');
+        }
+      })
+      .catch(() => {
+        return null;
+      });
+  }
+  return Promise.reject('No location specified.');
 };

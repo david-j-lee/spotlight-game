@@ -1,7 +1,6 @@
 import React, { FC } from 'react';
 
 import { makeStyles, Theme } from '@material-ui/core';
-import Grid from '@material-ui/core/Grid';
 
 import TopThree from './TopThree';
 import PlayerStats from './PlayerStats';

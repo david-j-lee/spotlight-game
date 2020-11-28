@@ -3,6 +3,7 @@ import firebase from '../firebase';
 import IAuth from './../interfaces/IAuth';
 import IGameResults from './../interfaces/IGameResults';
 import IGameResultsDb from '../interfaces/IGameResultsDb';
+import { isEmpty } from './utils';
 
 export const KEY = 'AIzaSyAjFiu-pfgJDA0mytcBO3qPk-TlQeI5_Y4';
 
@@ -128,12 +129,7 @@ export const tryToPopulateGeoDataInHistory = (
   };
   if (history) {
     history.forEach((record, index) => {
-      if (
-        record.lat === undefined ||
-        record.lat === null ||
-        record.lng === undefined ||
-        record.lng === null
-      ) {
+      if (isEmpty(record.lat) || isEmpty(record.lng)) {
         console.debug('fetching for ' + record.location, record);
         const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${record.location}&key=AIzaSyAjFiu-pfgJDA0mytcBO3qPk-TlQeI5_Y4`;
         getData(url, record);

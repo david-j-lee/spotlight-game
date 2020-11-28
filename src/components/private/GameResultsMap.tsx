@@ -15,6 +15,7 @@ import IGameResults from './../../interfaces/IGameResults';
 import TopWinningLocations from './TopWinningLocations';
 
 import { KEY, OPTIONS } from '../../utils/googlemaps';
+import { isEmpty } from '../../utils/utils';
 
 // TODO: Move into own file
 interface IMapMarker {
@@ -89,10 +90,7 @@ const GameResultsMap: FC<IProps> = () => {
               {history
                 .filter(
                   (gameResult) =>
-                    gameResult.lat !== undefined &&
-                    gameResult.lat !== null &&
-                    gameResult.lng !== undefined &&
-                    gameResult.lng !== null,
+                    !isEmpty(gameResult.lat) && !isEmpty(gameResult.lng)
                 )
                 .map((gameResult) => (
                   <MapMarker
