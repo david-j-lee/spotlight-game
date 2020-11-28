@@ -10,6 +10,7 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Drawer from '@material-ui/core/Drawer';
+import IconButton from '@material-ui/core/IconButton';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 
@@ -21,6 +22,7 @@ import SpeedDialAction from '@material-ui/lab/SpeedDialAction';
 
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+import CloseIcon from '@material-ui/icons/Close';
 import HomeIcon from '@material-ui/icons/Home';
 import SkipNextIcon from '@material-ui/icons/SkipNext';
 import WeekendIcon from '@material-ui/icons/Weekend';
@@ -32,7 +34,8 @@ import { useContext } from '../../context';
 import IGameResultsDb from '../../interfaces/IGameResultsDb';
 import Map from '../../img/map.png';
 
-import { KEY, getGeolocationUrl, OPTIONS } from '../../utils/googlemaps';
+import { KEY, OPTIONS } from '../../utils/googlemaps';
+import { isEmpty } from './../../utils/utils';
 
 // TODO: Move into own file
 interface IMapMarker {
@@ -85,10 +88,41 @@ const Game: FC = () => {
     if (!image && url) {
       setImageWithUrl(decodeURIComponent(url));
     }
+  }, [url, image, setImageWithUrl]);
+
+  useEffect(() => {
     if (image && url && image.source !== decodeURIComponent(url)) {
       history.push(encodeURIComponent(image.source));
     }
-  }, [url, image, history, setImageWithUrl]);
+  }, [url, image, history]);
+
+  useEffect(() => {
+    if (isEmpty(image?.lat) && isEmpty(image?.lng)) {
+      setGeolocation({ hasLatLng: false });
+    } else {
+      setGeolocation({
+        hasLatLng: true,
+        lat: image?.lat,
+        lng: image?.lng,
+      });
+    }
+  }, [image]);
+
+  const handleSkipImage = () => {
+    const skippedGame: IGameResultsDb = {
+      location: image?.caption || '',
+      imageSource: image?.source || '',
+      date: new Date().toISOString(),
+      winner: 'SKIPPED',
+      guesses: guesses || {},
+      skipped: true,
+    };
+    if (geolocation.hasLatLng) {
+      skippedGame.lat = geolocation.lat;
+      skippedGame.lng = geolocation.lng;
+    }
+    skipImage(skippedGame);
+  };
 
   const handleSkipClick = (event: any) => {
     event.preventDefault();
@@ -103,7 +137,7 @@ const Game: FC = () => {
 
   const handleOnSkipDialogResultExited = () => {
     setSkipDialogResultOpen(false);
-    skipImage({});
+    handleSkipImage();
   };
 
   const handleSkipDeclareWinnerDialogClick = () => {
@@ -114,42 +148,21 @@ const Game: FC = () => {
   const handleOnDeclareWinnerDialogExited = () => {
     if (skipOnDeclareWinnerDialogClose) {
       setSkipOnDeclareWinnerDialogClose(false);
-      skipImage(guesses);
+      handleSkipImage();
       setGuesses({});
     }
   };
 
   const handleOnMapClick = ({ lat, lng }: any) => {
-    setGeolocation({ ...geolocation, hasLatLng: true, lat, lng: lng });
+    setGeolocation({ ...geolocation, hasLatLng: true, lat, lng });
   };
 
-  const getGeolocation = (location: string | undefined) => {
-    if (location) {
-      fetch(getGeolocationUrl(location))
-        .then((res) => res.json())
-        .then((res) => {
-          if (res.results && res.results[0]) {
-            const geoLoc =
-              res.results[res.results.length - 1].geometry.location;
-            setGeolocation({
-              isLoaded: true,
-              hasLatLng: true,
-              lat: geoLoc.lat,
-              lng: geoLoc.lng,
-            });
-          } else {
-            throw new Error('Unable to find location');
-          }
-        })
-        .catch(() => {
-          setGeolocation({
-            isLoaded: true,
-            hasLatLng: false,
-            lat: null,
-            lng: null,
-          });
-        });
-    }
+  const handleClearMapSelection = () => {
+    setGeolocation({
+      hasLatLng: false,
+      lat: geolocation.lat,
+      lng: geolocation.lng,
+    });
   };
 
   const submitGuesses = () => {
@@ -160,7 +173,6 @@ const Game: FC = () => {
       setError('Every player must include a guess');
     } else {
       setDeclareWinnerDialogOpen(true);
-      getGeolocation(image?.caption);
     }
   };
 
@@ -174,9 +186,11 @@ const Game: FC = () => {
         winner,
         guesses,
         skipped: false,
-        lat: geolocation.lat,
-        lng: geolocation.lng,
       };
+      if (geolocation.hasLatLng) {
+        newGame.lat = geolocation.lat;
+        newGame.lng = geolocation.lng;
+      }
       gamesDb.push(newGame); // TODO: Need to set id on this object
 
       players
@@ -199,6 +213,45 @@ const Game: FC = () => {
       history.push(`/game-results/${url}`);
     }
   };
+
+  const map = () => (
+    <div>
+      <div className={classes.map}>
+        <GoogleMapReact
+          bootstrapURLKeys={{ key: KEY }}
+          options={{ ...OPTIONS, minZoom: 2 }}
+          hoverDistance={0}
+          center={{
+            lat: geolocation.lat ?? 37.09024,
+            lng: geolocation.lng ?? -95.712891,
+          }}
+          defaultZoom={4}
+          onClick={handleOnMapClick}
+        >
+          {geolocation.hasLatLng && (
+            <MapMarker lat={geolocation.lat} lng={geolocation.lng} />
+          )}
+        </GoogleMapReact>
+      </div>
+      <Typography variant="caption">
+        <small>
+          {geolocation.hasLatLng
+            ? `${geolocation.lat},${geolocation.lng}`
+            : '?,?'}
+        </small>
+      </Typography>
+      {geolocation.hasLatLng && (
+        <IconButton
+          aria-label="deselect location on map"
+          onClick={handleClearMapSelection}
+          className={classes.clearMapSelection}
+          size="small"
+        >
+          <CloseIcon fontSize="inherit" />
+        </IconButton>
+      )}
+    </div>
+  );
 
   if (game.players.length === 0) {
     return <Redirect to={`/lobby/${url}`} />;
@@ -278,92 +331,57 @@ const Game: FC = () => {
         classes={{ paper: classes.dialogPaper }}
       >
         <DialogTitle>{image.caption}</DialogTitle>
-        {!geolocation.isLoaded && (
-          <div className={classes.geolocationLoading}>
-            <Typography>
-              Trying to find more information for this location, please wait . .
-              .
-            </Typography>
+        <div className={classes.dialogContent}>
+          <div className="styled-scrollbar">
+            <div
+              className={[classes.image, classes.drawerImage].join(' ')}
+              style={{
+                background: `url(${image.source}) center / contain no-repeat`,
+              }}
+            />
+            {map()}
           </div>
-        )}
-        {geolocation.isLoaded && (
-          <div className={classes.dialogContent}>
-            <div className="styled-scrollbar">
-              <div
-                className={[classes.image, classes.drawerImage].join(' ')}
-                style={{
-                  background: `url(${image.source}) center / contain no-repeat`,
-                }}
-              />
-              <div className={classes.map}>
-                <GoogleMapReact
-                  bootstrapURLKeys={{ key: KEY }}
-                  options={{ ...OPTIONS, minZoom: 2 }}
-                  hoverDistance={0}
-                  center={{
-                    lat: geolocation.lat ?? 37.09024,
-                    lng: geolocation.lng ?? -95.712891,
-                  }}
-                  defaultZoom={4}
-                  onClick={handleOnMapClick}
-                >
-                  {geolocation.hasLatLng && (
-                    <MapMarker lat={geolocation.lat} lng={geolocation.lng} />
-                  )}
-                </GoogleMapReact>
-              </div>
-              {geolocation && (
-                <Typography variant="caption">
-                  <small>
-                    {geolocation.lat}, {geolocation.lng}
-                  </small>
-                </Typography>
-              )}
+          <div className={[classes.guesses, 'styled-scrollbar'].join(' ')}>
+            <div className={classes.players}>
+              {players
+                .filter((player) => player.playing && player.name !== 'No one')
+                .sort((a, b) =>
+                  guesses[a.name]
+                    ? guesses[a.name].localeCompare(guesses[b.name])
+                    : undefined,
+                )
+                .map((player) => (
+                  <Button
+                    key={player.name}
+                    variant="contained"
+                    className={classes.guess}
+                    onClick={() => declareWinner(player.name)}
+                  >
+                    {guesses[player.name] ? guesses[player.name] + ' - ' : ''}
+                    {player.name}
+                  </Button>
+                ))}
             </div>
-            <div className={[classes.guesses, 'styled-scrollbar'].join(' ')}>
-              <div className={classes.players}>
-                {players
-                  .filter(
-                    (player) => player.playing && player.name !== 'No one',
-                  )
-                  .sort((a, b) =>
-                    guesses[a.name]
-                      ? guesses[a.name].localeCompare(guesses[b.name])
-                      : undefined,
-                  )
-                  .map((player) => (
-                    <Button
-                      key={player.name}
-                      variant="contained"
-                      className={classes.guess}
-                      onClick={() => declareWinner(player.name)}
-                    >
-                      {guesses[player.name] ? guesses[player.name] + ' - ' : ''}
-                      {player.name}
-                    </Button>
-                  ))}
-              </div>
-              <div className={classes.actions}>
-                <Button
-                  variant="outlined"
-                  onClick={() => declareWinner('No one')}
-                >
-                  <span role="img" aria-label="The robots have won">
-                    💩
-                  </span>{' '}
-                  No one
-                </Button>
-                <Button
-                  variant="outlined"
-                  onClick={handleSkipDeclareWinnerDialogClick}
-                  startIcon={<SkipNextIcon />}
-                >
-                  Skip
-                </Button>
-              </div>
+            <div className={classes.actions}>
+              <Button
+                variant="outlined"
+                onClick={() => declareWinner('No one')}
+              >
+                <span role="img" aria-label="The robots have won">
+                  💩
+                </span>{' '}
+                No one
+              </Button>
+              <Button
+                variant="outlined"
+                onClick={handleSkipDeclareWinnerDialogClick}
+                startIcon={<SkipNextIcon />}
+              >
+                Skip
+              </Button>
             </div>
           </div>
-        )}
+        </div>
       </Dialog>
       {/* Dialog to skip the image */}
       <Dialog open={skipDialogOpen}>
@@ -391,6 +409,7 @@ const Game: FC = () => {
         onExited={handleOnSkipDialogResultExited}
       >
         <DialogTitle>{image.caption}</DialogTitle>
+        {map()}
         <DialogActions>
           <Button
             color="primary"
@@ -550,6 +569,9 @@ const useStyles = makeStyles((theme: Theme) => ({
   map: {
     width: '100%',
     height: 250,
+  },
+  clearMapSelection: {
+    fontSize: 10,
   },
 }));
 

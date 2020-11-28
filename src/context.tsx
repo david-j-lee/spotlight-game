@@ -8,6 +8,8 @@ import IState from './interfaces/IState';
 import { authActions } from './actions/authActions';
 import { gameActions } from './actions/gameActions';
 
+export type IGetState = () => IState;
+
 export const INITIAL_STATE: IState = {
   isLoaded: false,
   auth: {
