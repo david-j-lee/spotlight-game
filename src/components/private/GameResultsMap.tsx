@@ -17,6 +17,8 @@ import TopWinningLocations from './TopWinningLocations';
 import { KEY, OPTIONS } from '../../utils/googlemaps';
 import { isEmpty } from '../../utils/utils';
 
+// TODO: Move map into reuseable component, a lot of code is shared between this and HomeMap.tsx
+
 // TODO: Move into own file
 interface IMapMarker {
   onClick: any;
@@ -175,8 +177,7 @@ const useStyles = makeStyles((theme: Theme) => ({
         background: 'rgba(209, 35, 0, 0.5)',
       },
       '&.active': {
-        border: '3px solid rgba(61, 227, 105, 0.5)',
-        background: 'transparent',
+        border: '3px solid rgba(232, 205, 0, 0.9)',
       },
     },
   },
