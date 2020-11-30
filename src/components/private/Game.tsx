@@ -29,6 +29,7 @@ import WeekendIcon from '@material-ui/icons/Weekend';
 import CheckIcon from '@material-ui/icons/Check';
 import ClearIcon from '@material-ui/icons/Clear';
 import PinIcon from '@material-ui/icons/LocationOn';
+import ImageIcon from '@material-ui/icons/Image'
 
 import { useContext } from '../../context';
 import IGameResultsDb from '../../interfaces/IGameResultsDb';
@@ -415,9 +416,9 @@ const Game: FC = () => {
             color="primary"
             variant="contained"
             onClick={() => setSkipDialogResultOpen(false)}
-            startIcon={<ClearIcon />}
+            startIcon={<ImageIcon />}
           >
-            Close
+            NEXT PICTURE
           </Button>
         </DialogActions>
       </Dialog>

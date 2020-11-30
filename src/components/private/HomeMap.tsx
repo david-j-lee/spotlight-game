@@ -94,7 +94,11 @@ const GameResultsMap: FC<IProps> = () => {
                 key={gameResult.imageSource + gameResult.date}
                 className={[
                   'marker',
-                  gameResult.winner === 'No one' ? 'no-one' : 'someone',
+                  gameResult.winner === 'No one'
+                    ? 'no-one'
+                    : gameResult.winner === 'SKIPPED'
+                    ? 'skipped'
+                    : 'someone',
                   gameResult === marker ? 'active' : '',
                 ].join(' ')}
                 lat={gameResult.lat as number}
@@ -163,6 +167,9 @@ const useStyles = makeStyles((theme: Theme) => ({
       width: 15,
       height: 15,
       borderRadius: '100%',
+      '&.skipped': {
+        background: 'rgba(0, 0, 0, 0.5)',
+      },
       '&.someone': {
         background: 'rgba(61, 227, 105, 0.5)',
       },

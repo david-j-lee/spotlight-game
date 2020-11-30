@@ -92,7 +92,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     flexGrow: 1,
     display: 'flex',
     flexDirection: 'column',
-    padding: theme.spacing(8),
+    padding: theme.spacing(8, 16),
     position: 'relative',
   },
   email: {
@@ -131,10 +131,10 @@ const useStyles = makeStyles((theme: Theme) => ({
     justifyContent: 'flex-end',
     alignItems: 'flex-start',
     marginBottom: theme.spacing(4),
-    minWidth: 800,
+    minWidth: 300,
     '& > *': {
       marginBottom: theme.spacing(2),
-      maxWidth: 200,
+      maxWidth: 300,
       width: '100%',
     },
   },
