@@ -139,7 +139,7 @@ const GameResultsMap: FC<IProps> = () => {
             />
             <CardContent className={classes.cardContent}>
               <Typography>
-                <small>{marker?.momentDate.format('ddd, M/D')}</small>
+                <small>{marker?.momentDate.format('ddd, M/D/YYYY')}</small>
               </Typography>
               <Typography variant="body1">
                 <strong>{marker?.winner}</strong>
