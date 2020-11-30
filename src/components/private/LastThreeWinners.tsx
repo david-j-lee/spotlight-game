@@ -60,7 +60,7 @@ const LastThreeWinners: FC = () => {
 
 const useStyle = makeStyles((theme: Theme) => ({
   root: {
-    height: '100%',
+    padding: theme.spacing(),
     display: 'flex',
     flexDirection: 'column',
   },
@@ -70,18 +70,18 @@ const useStyle = makeStyles((theme: Theme) => ({
     overflowY: 'auto',
   },
   card: {
-    width: 300,
-    maxWidth: 300,
+    width: '100%',
+    maxWidth: 332,
     flexShrink: 0,
     marginBottom: theme.spacing(),
     position: 'relative',
     background: 'transparent',
   },
   cardContent: {
-    width: 300,
+    width: '100%',
     paddingTop: `${theme.spacing()}px !important`,
     paddingBottom: `${theme.spacing()}px !important`,
-    backgroundColor: fade(theme.palette.background.paper, 0.8),
+    backgroundColor: fade(theme.palette.background.paper, 0.7),
     '& p': {
       background: `linear-gradient(180deg, rgba(255,255,255,0) 50%, ${theme.palette.primary.dark} 50%)`,
       display: 'inline',

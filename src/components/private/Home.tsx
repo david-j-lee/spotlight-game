@@ -13,6 +13,7 @@ import { useContext } from '../../context';
 import LastThreeWinners from './LastThreeWinners';
 import TopThree from './TopThree';
 import Spotlight from '../../img/spotlight.png';
+import HomeMap from './HomeMap';
 
 interface IProps {}
 
@@ -41,39 +42,44 @@ const Home: FC<IProps> = () => {
           </Typography>
         </div>
       </div>
-      <div className={[classes.stats, 'styled-scrollbar'].join(' ')}>
-        <LastThreeWinners />
-        <TopThree />
+      <div className={classes.body}>
+        <div className={classes.buttons}>
+          <Button
+            component={Link}
+            to="/lobby"
+            color="primary"
+            size="large"
+            variant="contained"
+            startIcon={<PublicIcon />}
+          >
+            Play
+          </Button>
+          <Button
+            component={Link}
+            to="/stats"
+            color="secondary"
+            size="large"
+            variant="contained"
+            startIcon={<ListIcon />}
+          >
+            Stats
+          </Button>
+          <Button
+            onClick={logoff}
+            color="secondary"
+            variant="outlined"
+            startIcon={<ExitToAppIcon />}
+          >
+            Quit
+          </Button>
+        </div>
+        <div className={[classes.stats, 'styled-scrollbar'].join(' ')}>
+          <TopThree />
+          <LastThreeWinners />
+        </div>
       </div>
-      <div className={classes.buttons}>
-        <Button
-          component={Link}
-          to="/lobby"
-          color="primary"
-          size="large"
-          variant="contained"
-          startIcon={<PublicIcon />}
-        >
-          Play
-        </Button>
-        <Button
-          component={Link}
-          to="/stats"
-          color="secondary"
-          size="large"
-          variant="contained"
-          startIcon={<ListIcon />}
-        >
-          Stats
-        </Button>
-        <Button
-          onClick={logoff}
-          color="secondary"
-          variant="outlined"
-          startIcon={<ExitToAppIcon />}
-        >
-          Quit
-        </Button>
+      <div className={classes.map}>
+        <HomeMap />
       </div>
     </div>
   );
@@ -97,13 +103,19 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
   header: {
     display: 'flex',
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
+    paddingLeft: 50,
     marginLeft: -150 / 2,
     alignItems: 'center',
     marginBottom: theme.spacing(4),
     '& strong': {
       color: 'yellow',
     },
+  },
+  body: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    flexGrow: 1,
   },
   image: {
     width: 150,
@@ -112,30 +124,38 @@ const useStyles = makeStyles((theme: Theme) => ({
   title: {
     width: 'min-content',
   },
-  stats: {
-    width: '100%',
-    maxWidth: 800,
-    margin: `${theme.spacing()}px auto`,
+  buttons: {
+    flexGrow: 1,
     display: 'flex',
-    justifyContent: 'space-between',
+    flexDirection: 'column',
+    justifyContent: 'flex-end',
+    alignItems: 'flex-start',
+    marginBottom: theme.spacing(4),
+    minWidth: 800,
+    '& > *': {
+      marginBottom: theme.spacing(2),
+      maxWidth: 200,
+      width: '100%',
+    },
+  },
+  stats: {
+    display: 'flex',
+    flexDirection: 'column',
     alignItems: 'center',
+    justifyContent: 'flex-start',
     overflowX: 'auto',
     overflowY: 'hidden',
     '& > div': {
       flexShrink: 0,
     },
   },
-  buttons: {
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: theme.spacing(4),
-    '& > *': {
-      marginBottom: theme.spacing(2),
-      maxWidth: 200,
-      width: '100%',
-    },
+  map: {
+    position: 'absolute',
+    top: 0,
+    bottom: 0,
+    left: 0,
+    right: 0,
+    zIndex: -10,
   },
 }));
 
