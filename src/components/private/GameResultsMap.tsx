@@ -90,7 +90,7 @@ const GameResultsMap: FC<IProps> = () => {
               {history
                 .filter(
                   (gameResult) =>
-                    !isEmpty(gameResult.lat) && !isEmpty(gameResult.lng)
+                    !isEmpty(gameResult.lat) && !isEmpty(gameResult.lng),
                 )
                 .map((gameResult) => (
                   <MapMarker
@@ -161,15 +161,15 @@ const useStyles = makeStyles((theme: Theme) => ({
       width: 15,
       height: 15,
       borderRadius: '100%',
-      '&.active': {
-        border: '1px solid rgba(61, 227, 105, 0.5)',
-        background: 'transparent',
-      },
       '&.someone': {
         background: 'rgba(61, 227, 105, 0.5)',
       },
       '&.no-one': {
         background: 'rgba(209, 35, 0, 0.5)',
+      },
+      '&.active': {
+        border: '3px solid rgba(61, 227, 105, 0.5)',
+        background: 'transparent',
       },
     },
   },
