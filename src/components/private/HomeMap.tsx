@@ -126,6 +126,7 @@ const GameResultsMap: FC<IProps> = () => {
           horizontal: 'right',
         }}
         classes={{
+          root: classes.popover,
           paper: classes.paper,
         }}
       >
@@ -172,6 +173,9 @@ const useStyles = makeStyles((theme: Theme) => ({
         border: '3px solid rgba(232, 205, 0, 0.9)',
       },
     },
+  },
+  popover: {
+    pointerEvents: 'none',
   },
   paper: {
     backgroundColor: 'transparent',
