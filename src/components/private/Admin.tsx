@@ -83,6 +83,7 @@ const Admin: FC<IProps> = () => {
     const noDupes = Object.values(
       data.reduce((acc: any, item) => {
         acc[item.id] = item;
+        return acc;
       }, {}),
     );
     console.debug(noDupes.length);
@@ -96,7 +97,7 @@ const Admin: FC<IProps> = () => {
       <div className={classes.buttons}>
         <Button onClick={cleanUpImageSources}>Clean Up Image Sources</Button>
         <Button onClick={cleanUpData}>Clean Up Data</Button>
-        <Button onClick={cleanUpData}>Remove Dupes from Data</Button>
+        <Button onClick={removeDupesFromData}>Remove Dupes from Data</Button>
       </div>
       <div className={classes.messages}>
         {messages.map((message, index) => (
