@@ -213,7 +213,8 @@ const getGeolocation = async (location: string | undefined) => {
           throw new Error('Unable to find location');
         }
       })
-      .catch(() => {
+      .catch((err) => {
+        console.error(err);
         return null;
       });
   }

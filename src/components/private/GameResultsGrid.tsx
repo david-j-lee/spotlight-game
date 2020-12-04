@@ -13,17 +13,16 @@ import Divider from '@material-ui/core/Divider';
 import Grid from '@material-ui/core/Grid';
 import IconButton from '@material-ui/core/IconButton';
 import InputAdornment from '@material-ui/core/InputAdornment';
-import Link from '@material-ui/core/Link';
 import Slide from '@material-ui/core/Slide';
 import TextField from '@material-ui/core/TextField';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 
-import LinkIcon from '@material-ui/icons/Link';
 import SearchIcon from '@material-ui/icons/Search';
 import CloseIcon from '@material-ui/icons/Close';
 
 import { useContext } from '../../context';
+import { getImageSource } from '../../utils/utils';
 
 const WINNER_EMOJIS = ['🎉', '😊', '🥳', '🎊'];
 const NO_ONE_EMOJIS = ['🤖', '💩', '🖥️', '👾', '💻'];
@@ -89,7 +88,7 @@ const GameResultsGrid: FC<IProps> = () => {
                 <>
                   <CardMedia
                     className={classes.media}
-                    image={record.imageSource}
+                    image={getImageSource(record.imageSource, 'md')}
                     title={record.location}
                   />
                   <div className={'card-media-info'}>
@@ -123,13 +122,7 @@ const GameResultsGrid: FC<IProps> = () => {
                     {record.momentDate.format('ddd, MMMM D, YYYY h:mm A')}
                   </Typography>
                 </div>
-                <Typography
-                  variant="body1"
-                  component={Link}
-                  href={record.imageSource}
-                >
-                  {record.location} <LinkIcon />
-                </Typography>
+                <Typography variant="body1">{record.location}</Typography>
                 <Divider className={classes.divider} />
                 {record.guesses &&
                   Object.entries(record.guesses).map(([key, value]) => (
@@ -256,7 +249,9 @@ const GameResultsGrid: FC<IProps> = () => {
         </AppBar>
         <div
           style={{
-            background: `#000 url(${dialogImageSource}) center / contain no-repeat`,
+            background: `#000 url(${getImageSource(
+              dialogImageSource as string,
+            )}) center / contain no-repeat`,
           }}
           className={classes.dialogImage}
         ></div>
@@ -283,6 +278,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     padding: theme.spacing(),
   },
   card: {
+    cursor: 'pointer',
     position: 'relative',
     '&:hover .card-media-info': {
       display: 'none',
@@ -321,13 +317,6 @@ const useStyles = makeStyles((theme: Theme) => ({
     bottom: 0,
     left: 0,
     right: 0,
-    '& a': {
-      color: theme.palette.text.primary,
-      display: 'inline',
-      '& svg': {
-        fontSize: theme.typography.fontSize,
-      },
-    },
   },
   skipped: {
     opacity: 0.7,
@@ -336,6 +325,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     margin: theme.spacing(1, 0),
   },
   chip: {
+    cursor: 'pointer',
     margin: theme.spacing(0, 0.5, 0.5, 0),
   },
   media: {

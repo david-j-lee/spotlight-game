@@ -10,7 +10,7 @@ import Typography from '@material-ui/core/Typography';
 
 import { useContext } from '../../context';
 import { KEY, OPTIONS } from '../../utils/googlemaps';
-import { isEmpty } from '../../utils/utils';
+import { getImageSource, isEmpty } from '../../utils/utils';
 import IGameResults from '../../interfaces/IGameResults';
 
 // TODO: Move into own file
@@ -138,7 +138,7 @@ const GameResultsMap: FC<IProps> = () => {
           <Card className={classes.card}>
             <CardMedia
               className={classes.image}
-              image={marker?.imageSource ?? 'unknown'}
+              image={marker ? getImageSource(marker?.imageSource) : 'unknown'}
               title={marker?.location ?? ''}
             />
             <CardContent className={classes.cardContent}>

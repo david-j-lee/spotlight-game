@@ -16,6 +16,7 @@ import OpenInNewIcon from '@material-ui/icons/OpenInNew';
 import { useContext } from '../../context';
 import IGameResults from '../../interfaces/IGameResults';
 import Confetti from '../../utils/Confetti';
+import { getImageSource } from '../../utils/utils';
 
 const GameResults: FC = () => {
   const params: any = useParams();
@@ -28,7 +29,7 @@ const GameResults: FC = () => {
 
   const handleImageClick = () => {
     if (record) {
-      window.open(record.imageSource);
+      window.open(getImageSource(record.imageSource));
     }
   };
 
@@ -77,14 +78,18 @@ const GameResults: FC = () => {
         <CardHeader
           className={classes.cardHeader}
           title={
-            <Link href={record.imageSource} target="_blank" rel="noreferrer">
+            <Link
+              href={getImageSource(record.imageSource)}
+              target="_blank"
+              rel="noreferrer"
+            >
               {record.location} <OpenInNewIcon />
             </Link>
           }
         />
         <CardMedia
           className={classes.media}
-          image={record.imageSource}
+          image={getImageSource(record.imageSource)}
           onClick={handleImageClick}
           title={record.location}
         ></CardMedia>

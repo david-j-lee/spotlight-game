@@ -15,7 +15,7 @@ import IGameResults from './../../interfaces/IGameResults';
 import TopWinningLocations from './TopWinningLocations';
 
 import { KEY, OPTIONS } from '../../utils/googlemaps';
-import { isEmpty } from '../../utils/utils';
+import { isEmpty, getImageSource } from '../../utils/utils';
 
 // TODO: Move map into reuseable component, a lot of code is shared between this and HomeMap.tsx
 
@@ -138,7 +138,7 @@ const GameResultsMap: FC<IProps> = () => {
           >
             <CardMedia
               className={classes.image}
-              image={selectedMarker.imageSource}
+              image={getImageSource(selectedMarker.imageSource, 'md')}
               title={selectedMarker.location}
             />
             <CardContent className={classes.cardContent}>

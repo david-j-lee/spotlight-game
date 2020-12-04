@@ -29,14 +29,14 @@ import WeekendIcon from '@material-ui/icons/Weekend';
 import CheckIcon from '@material-ui/icons/Check';
 import ClearIcon from '@material-ui/icons/Clear';
 import PinIcon from '@material-ui/icons/LocationOn';
-import ImageIcon from '@material-ui/icons/Image'
+import ImageIcon from '@material-ui/icons/Image';
 
 import { useContext } from '../../context';
 import IGameResultsDb from '../../interfaces/IGameResultsDb';
 import Map from '../../img/map.png';
 
 import { KEY, OPTIONS } from '../../utils/googlemaps';
-import { isEmpty } from './../../utils/utils';
+import { isEmpty, getImageSource } from './../../utils/utils';
 
 // TODO: Move into own file
 interface IMapMarker {
@@ -270,7 +270,9 @@ const Game: FC = () => {
           ' ',
         )}
         style={{
-          background: `url(${image.source}) center / contain no-repeat`,
+          background: `url(${getImageSource(
+            image.source,
+          )}) center / contain no-repeat`,
         }}
       />
       {/* Drawer used to fill in guesses */}
@@ -337,7 +339,10 @@ const Game: FC = () => {
             <div
               className={[classes.image, classes.drawerImage].join(' ')}
               style={{
-                background: `url(${image.source}) center / contain no-repeat`,
+                background: `url(${getImageSource(
+                  image.source,
+                  'lg',
+                )}) center / contain no-repeat`,
               }}
             />
             {map()}

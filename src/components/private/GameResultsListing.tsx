@@ -18,6 +18,7 @@ import Typography from '@material-ui/core/Typography';
 import CloseIcon from '@material-ui/icons/Close';
 
 import { useContext } from '../../context';
+import { getImageSource } from '../../utils/utils';
 
 const WINNER_EMOJIS = ['🎉', '😊', '🥳', '🎊'];
 const NO_ONE_EMOJIS = ['🤖', '💩', '🖥️', '👾', '💻'];
@@ -75,7 +76,7 @@ const GameResultsListing: FC<IProps> = () => {
                   {record.imageSource && (
                     <CardMedia
                       className={classes.media}
-                      image={record.imageSource}
+                      image={getImageSource(record.imageSource)}
                       title={record.location}
                       onClick={() => handleClickOpen(record.imageSource)}
                     />

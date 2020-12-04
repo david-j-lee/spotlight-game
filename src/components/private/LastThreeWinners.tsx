@@ -7,6 +7,7 @@ import Link from '@material-ui/core/Link';
 import Typography from '@material-ui/core/Typography';
 
 import { useContext } from '../../context';
+import { getImageSource } from '../../utils/utils';
 
 const LastThreeWinners: FC = () => {
   const classes = useStyle();
@@ -38,7 +39,7 @@ const LastThreeWinners: FC = () => {
               </Typography>
               <Link
                 variant="caption"
-                href={record.imageSource}
+                href={getImageSource(record.imageSource)}
                 target="_blank"
                 rel="noreferrer"
               >
@@ -48,7 +49,9 @@ const LastThreeWinners: FC = () => {
             <div
               className={classes.image}
               style={{
-                background: `url(${record.imageSource}) center / cover no-repeat`,
+                background: `url(${getImageSource(
+                  record.imageSource,
+                )}) center / cover no-repeat`,
               }}
             ></div>
           </Card>
