@@ -8,7 +8,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
-    "deploy-aws": "npm run build && aws s3 sync build/ s3://daebit.com",
+    "deploy-aws": "npm run build && aws s3 sync build/ s3://daebit.com --exclude=\"images/\"",
     "deploy-gh": "npm run build && gh-pages -d build",
     "coverage": "react-scripts test --env=jsdom --coverage"
   },
