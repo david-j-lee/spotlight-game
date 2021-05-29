@@ -20,6 +20,8 @@ import Typography from '@material-ui/core/Typography';
 
 import SearchIcon from '@material-ui/icons/Search';
 import CloseIcon from '@material-ui/icons/Close';
+import FullscreenIcon from '@material-ui/icons/Fullscreen';
+import FileCopyIcon from '@material-ui/icons/FileCopy';
 
 import { useContext } from '../../context';
 import { getImageSource } from '../../utils/utils';
@@ -115,31 +117,57 @@ const GameResultsGrid: FC<IProps> = () => {
               )}
               <CardContent
                 className={[classes.cardContent, 'card-content'].join(' ')}
-                onClick={() => handleClickOpen(record.imageSource)}
               >
-                <div>
+                <div className={classes.cardContentText}>
                   <Typography variant="caption">
                     {record.momentDate.format('ddd, MMMM D, YYYY h:mm A')}
                   </Typography>
-                </div>
-                <Typography variant="body1">{record.location}</Typography>
-                <Divider className={classes.divider} />
-                {record.guesses &&
-                  Object.entries(record.guesses).map(([key, value]) => (
-                    <Chip
-                      key={key}
-                      label={`${key} - ${value}`}
+                  <Typography variant="body1">
+                    {record.location}
+                    <IconButton
                       size="small"
-                      variant={key === record.winner ? 'default' : 'outlined'}
-                      className={classes.chip}
-                    />
-                  ))}
-                <div>
-                  <Typography variant="caption">
-                    <small>
-                      {record.lat ?? '?'}, {record.lng ?? '?'}
-                    </small>
+                      onClick={() => handleClickCopy(record.location)}
+                      className={classes.smallIconButton}
+                    >
+                      <FileCopyIcon className={classes.smallIcon} />
+                    </IconButton>
                   </Typography>
+                  <Divider className={classes.divider} />
+                  {record.guesses &&
+                    Object.entries(record.guesses).map(([key, value]) => (
+                      <Chip
+                        key={key}
+                        label={`${key} - ${value}`}
+                        size="small"
+                        variant={key === record.winner ? 'default' : 'outlined'}
+                        className={classes.chip}
+                      />
+                    ))}
+                  <div>
+                    <Typography variant="caption">
+                      <small>
+                        {record.lat ?? '?'}, {record.lng ?? '?'}
+                      </small>
+                    </Typography>
+                  </div>
+                </div>
+                <div className={classes.cardContentActions}>
+                  <Button
+                    size="small"
+                    variant="outlined"
+                    onClick={() => handleClickOpen(record.imageSource)}
+                    startIcon={<FullscreenIcon />}
+                  >
+                    Expand Picture
+                  </Button>
+                  <Button
+                    size="small"
+                    variant="outlined"
+                    onClick={() => handleClickCopy(record.location)}
+                    startIcon={<FileCopyIcon />}
+                  >
+                    Copy Location
+                  </Button>
                 </div>
               </CardContent>
             </Card>
@@ -155,6 +183,15 @@ const GameResultsGrid: FC<IProps> = () => {
 
   const handleClose = () => {
     setDialogImageSource(false);
+  };
+  
+  const handleClickCopy = (value: any) => {
+    const element = document.createElement('textarea');
+    element.value = value;
+    document.body.appendChild(element);
+    element.select();
+    document.execCommand('copy');
+    document.body.removeChild(element);
   };
 
   const handleSearchInputChange = (event: any) => {
@@ -278,13 +315,13 @@ const useStyles = makeStyles((theme: Theme) => ({
     padding: theme.spacing(),
   },
   card: {
-    cursor: 'pointer',
     position: 'relative',
     '&:hover .card-media-info': {
       display: 'none',
     },
     '&:hover .card-content': {
-      display: 'block',
+      display: 'flex',
+      flexDirection: 'column',
     },
   },
   cardMediaWinner: {
@@ -318,6 +355,14 @@ const useStyles = makeStyles((theme: Theme) => ({
     left: 0,
     right: 0,
   },
+  cardContentText: {
+    flexGrow: 1,
+  },
+  cardContentActions: {
+    '& > *': {
+      marginRight: theme.spacing(0.5),
+    },
+  },
   skipped: {
     opacity: 0.7,
   },
@@ -325,7 +370,6 @@ const useStyles = makeStyles((theme: Theme) => ({
     margin: theme.spacing(1, 0),
   },
   chip: {
-    cursor: 'pointer',
     margin: theme.spacing(0, 0.5, 0.5, 0),
   },
   media: {
@@ -342,6 +386,12 @@ const useStyles = makeStyles((theme: Theme) => ({
   dialogImage: {
     height: '100%',
     width: '100%',
+  },
+  smallIconButton: {
+    marginLeft: theme.spacing(0.5),
+  },
+  smallIcon: {
+    fontSize: 12,
   },
 }));
 
