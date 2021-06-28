@@ -1,5 +1,5 @@
 export default interface IPlayer {
-  _id: string;
+  id: string;
   active: boolean;
   playing: boolean;
   name: string;

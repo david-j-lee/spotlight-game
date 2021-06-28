@@ -32,6 +32,7 @@ import PinIcon from '@material-ui/icons/LocationOn';
 import ImageIcon from '@material-ui/icons/Image';
 
 import { useContext } from '../../context';
+import { getPlayer } from '../../actions/playerActions';
 import IGameResultsDb from '../../interfaces/IGameResultsDb';
 import Map from '../../img/map.png';
 
@@ -72,15 +73,11 @@ const Game: FC = () => {
 
   const [speedDialOpen, setSpeedDialOpen] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const [declareWinnerDialogOpen, setDeclareWinnerDialogOpen] = React.useState(
-    false,
-  );
+  const [declareWinnerDialogOpen, setDeclareWinnerDialogOpen] = useState(false);
   const [skipDialogOpen, setSkipDialogOpen] = useState(false);
   const [skipDialogResultOpen, setSkipDialogResultOpen] = useState(false);
-  const [
-    skipOnDeclareWinnerDialogClose,
-    setSkipOnDeclareWinnerDialogClose,
-  ] = useState(false);
+  const [skipOnDeclareWinnerDialogClose, setSkipOnDeclareWinnerDialogClose] =
+    useState(false);
   const [error, setError] = useState('');
   const [guesses, setGuesses] = useState<any>({});
   const [geolocation, setGeolocation] = useState<any>({});
@@ -197,9 +194,7 @@ const Game: FC = () => {
       players
         .filter((player) => player.playing)
         .forEach((player) => {
-          const playerDb = firebase
-            .database()
-            .ref(userId + '/players/' + player._id);
+          const playerDb = getPlayer(userId, player.id);
           if (player.name === winner) {
             playerDb.update({
               wins: (player.wins += 1),
