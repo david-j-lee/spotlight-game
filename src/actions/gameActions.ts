@@ -36,10 +36,7 @@ export const gameActions = {
             .map(([key, value]: [string, any]) => ({
               ...value,
               id: key,
-              momentDate: moment(value.date, [
-                'M/D/YYYY',
-                'YYYY-MM-DDTHH:mm:ss.SSS[Z]',
-              ]),
+              momentDate: moment(value.date),
             }))
             .sort(
               (a: any, b: any) =>

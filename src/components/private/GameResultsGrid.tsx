@@ -56,9 +56,10 @@ const GameResultsGrid: FC<IProps> = () => {
     [filteredListing, currentPage],
   );
 
-  const maxPage = useMemo(() => Math.ceil(filteredListing.length / PAGE_SIZE), [
-    filteredListing.length,
-  ]);
+  const maxPage = useMemo(
+    () => Math.ceil(filteredListing.length / PAGE_SIZE),
+    [filteredListing.length],
+  );
 
   const memoListing = useMemo(
     () =>
@@ -116,7 +117,11 @@ const GameResultsGrid: FC<IProps> = () => {
                 </>
               )}
               <CardContent
-                className={[classes.cardContent, 'card-content'].join(' ')}
+                className={[
+                  classes.cardContent,
+                  'card-content',
+                  'styled-scrollbar',
+                ].join(' ')}
               >
                 <div className={classes.cardContentText}>
                   <Typography variant="caption">
@@ -184,7 +189,7 @@ const GameResultsGrid: FC<IProps> = () => {
   const handleClose = () => {
     setDialogImageSource(false);
   };
-  
+
   const handleClickCopy = (value: any) => {
     const element = document.createElement('textarea');
     element.value = value;
@@ -354,6 +359,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     bottom: 0,
     left: 0,
     right: 0,
+    overflow: 'auto',
   },
   cardContentText: {
     flexGrow: 1,
