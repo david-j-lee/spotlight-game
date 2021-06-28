@@ -7,6 +7,7 @@ import IState from './interfaces/IState';
 
 import { authActions } from './actions/authActions';
 import { gameActions } from './actions/gameActions';
+import { playerActions } from './actions/playerActions';
 
 export type IGetState = () => IState;
 
@@ -32,6 +33,7 @@ export const INITIAL_STATE: IState = {
 const contract = {
   ...authActions,
   ...gameActions,
+  ...playerActions,
 };
 
 const Context = React.createContext(INITIAL_STATE);

@@ -10,22 +10,24 @@ import IGameResultsDb from './../interfaces/IGameResultsDb';
 import IImage from './../interfaces/IImage';
 
 import { getGeolocationUrl } from '../utils/googlemaps';
+import { getPlayers } from './playerActions';
 
 export const gameActions = {
   async loadAssets(user: string) {
     let history: any[] = [];
-    const players: any[] = [];
-    await Promise.all([getPlayerInfo(user), getGameHistory(user)])
+    let players: any[] = [];
+    await Promise.all([
+      getPlayers(user).once('value'),
+      getGameHistory(user).once('value'),
+    ])
       .then(async (snaps) => {
         let val = snaps[0].val();
-        for (let _id in val) {
-          val[_id]['_id'] = _id;
-          if (val[_id].active) {
-            val[_id].playing = true;
-          } else {
-            val[_id].playing = false;
-          }
-          players.push(val[_id]);
+        if (val) {
+          players = Object.entries(val).map(([key, value]: [string, any]) => ({
+            ...value,
+            id: key,
+            playing: value.active,
+          }));
         }
 
         val = snaps[1].val();
@@ -118,22 +120,6 @@ export const gameActions = {
       };
     };
   },
-  toggleUserPlayingState(name: string) {
-    return (state: IState): IState => {
-      return {
-        ...state,
-        game: {
-          ...state.game,
-          players: state.game.players.map((player) => {
-            if (player.name === name) {
-              player.playing = !player.playing;
-            }
-            return player;
-          }),
-        },
-      };
-    };
-  },
   addGameToHistory(game: IGameResults) {
     return (state: IState): IState => {
       return {
@@ -160,14 +146,8 @@ const getRandomImage = async (history: any[]): Promise<any> => {
   return entry;
 };
 
-const getPlayerInfo = (user: string) => {
-  const playersRef = firebase.database().ref(user + '/players');
-  return playersRef.once('value');
-};
-
 const getGameHistory = (user: string) => {
-  const gameHistoryRef = firebase.database().ref(user + '/games');
-  return gameHistoryRef.once('value');
+  return firebase.database().ref(user + '/games');
 };
 
 const getHints = (history: any[]) => {
